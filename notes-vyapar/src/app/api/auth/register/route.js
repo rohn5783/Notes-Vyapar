@@ -6,13 +6,24 @@ export async function POST(req) {
     await connectDB();
 
     const body = await req.json();
-    const user = await registerUser(body);
+    const { user, emailVerificationSent } = await registerUser(body);
 
     return Response.json({
-      message: "User registered",
+      success: true,
+      message: emailVerificationSent
+        ? "User registered successfully. Verification email sent."
+        : "Verification email could not be sent. Please try again.",
       user
     });
   } catch (error) {
-    return Response.json({ error: error.message }, { status: 400 });
+    const status = error.message === "User already exists" ? 409 : 400;
+
+    return Response.json(
+      {
+        success: false,
+        message: error.message || "Something went wrong"
+      },
+      { status }
+    );
   }
 }

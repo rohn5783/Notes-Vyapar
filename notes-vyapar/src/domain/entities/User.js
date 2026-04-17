@@ -5,12 +5,14 @@ const userSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    
+    trim: true,
   },
   email: {
     type: String,
     required: true,
     unique: true,
+    lowercase: true,
+    trim: true,
   },
   password: {
     type: String,
@@ -33,7 +35,16 @@ const userSchema = new mongoose.Schema({
   isVerified: {
     type: Boolean,
     default: false,
-  }},{timestamps: true});
+  },
+  verificationToken: {
+    type: String,
+    default: null,
+  },
+  verificationTokenExpiry: {
+    type: Date,
+    default: null,
+  }
+},{timestamps: true});
 
 
   //  password hash before save 
@@ -41,6 +52,11 @@ userSchema.pre('save', async function () {
   if (!this.isModified('password')) {
     return;
   }
+
+  if (typeof this.password === "string" && this.password.startsWith("$2")) {
+    return;
+  }
+
  this.password = await bcrypt.hash(this.password, 10);
 });
 
