@@ -39,13 +39,14 @@ To run this project locally, follow these steps:
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/notes-vyapar.git
+git clone https://github.com/rohn5783/Notes-Vyapar.git
 cd notes-vyapar
 ```
 
 ### 2. Install dependencies
 Ensure you are using `npm`, `yarn`, `pnpm`, or `bun` inside the actual project directory:
 ```bash
+cd notes-vyapar
 npm install
 # or bun install
 ```
