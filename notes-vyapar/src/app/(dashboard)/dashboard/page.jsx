@@ -91,7 +91,7 @@ export default function DashboardPage() {
   useEffect(() => {
     if (status === "ready" && !isAuthenticated) {
       startTransition(() => {
-        router.replace("/login");
+        router.replace("/");
       });
     }
   }, [isAuthenticated, router, status]);
@@ -150,7 +150,7 @@ export default function DashboardPage() {
     <main className={styles.dashboardPage}>
       <aside className={styles.sidebar}>
         <div>
-          <div className={styles.sidebarBrand}>Ethereal Archive</div>
+          <div className={styles.sidebarBrand}>Notes Vyapar</div>
 
           <section className={styles.profileCard}>
             <span className={styles.profileBadge}>
@@ -363,8 +363,8 @@ export default function DashboardPage() {
 
         <footer className={styles.footer}>
           <div>
-            <strong>Ethereal Archive</strong>
-            <p>&copy; 2026 Ethereal Archive. Knowledge curated.</p>
+            <strong>Notes Vyapar</strong>
+            <p>&copy; 2026 Notes Vyapar. Knowledge curated.</p>
           </div>
           <div className={styles.footerLinks}>
             <Link href="/notes">Terms of Service</Link>

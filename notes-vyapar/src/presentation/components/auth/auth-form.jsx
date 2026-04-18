@@ -237,7 +237,7 @@ export default function AuthForm({
 
       <section className={styles.brandBlock} aria-label="Brand introduction">
         <p className={styles.brandEyebrow}>Notes Vyapar</p>
-        <h1 className={styles.brandTitle}>The Ethereal Archive</h1>
+        <h1 className={styles.brandTitle}>Notes Vyapar</h1>
         <p className={styles.brandSubtitle}>Curating knowledge for the future</p>
       </section>
 

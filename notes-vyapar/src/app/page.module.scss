@@ -1,0 +1,522 @@
+.homePage {
+  position: relative;
+  overflow: hidden;
+  min-height: 100vh;
+  padding: 22px 22px 40px;
+  background:
+    radial-gradient(circle at 12% 12%, rgba(91, 76, 255, 0.18), transparent 26%),
+    radial-gradient(circle at 88% 88%, rgba(91, 76, 255, 0.14), transparent 24%),
+    linear-gradient(180deg, #0d1426 0%, #12192c 100%);
+  color: #f8f6ff;
+}
+
+.glowOrbLeft,
+.glowOrbRight {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(54px);
+  pointer-events: none;
+}
+
+.glowOrbLeft {
+  top: 120px;
+  left: -120px;
+  width: 260px;
+  height: 260px;
+  background: rgba(88, 70, 255, 0.18);
+}
+
+.glowOrbRight {
+  right: -100px;
+  bottom: 180px;
+  width: 300px;
+  height: 300px;
+  background: rgba(120, 62, 255, 0.16);
+}
+
+.topbar,
+.heroSection,
+.searchBarSection,
+.featuredSection,
+.sellerSection,
+.footer {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 1180px);
+  margin: 0 auto;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  min-height: 58px;
+  padding: 0 6px;
+  border-radius: 18px;
+  background: rgba(14, 20, 38, 0.82);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.brand {
+  padding-left: 16px;
+  font-family: "Manrope", "Segoe UI", sans-serif;
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.primaryNav,
+.authLinks,
+.searchTags,
+.footerLinks {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.primaryNav a,
+.loginLink,
+.footerLinks a {
+  color: rgba(210, 206, 230, 0.72);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.signupButton,
+.primaryCta,
+.sellerButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 18px;
+  border-radius: 14px;
+  color: #ffffff;
+  font-weight: 700;
+  background: linear-gradient(90deg, #5146f0 0%, #7a44ff 100%);
+  box-shadow: 0 14px 30px rgba(88, 70, 255, 0.24);
+}
+
+.heroSection {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  padding: 72px 0 40px;
+}
+
+.eyebrow {
+  min-height: 30px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 14px;
+  border-radius: 999px;
+  margin-bottom: 24px;
+  background: rgba(28, 35, 57, 0.9);
+  color: rgba(197, 192, 223, 0.82);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.heroSection h1 {
+  margin: 0;
+  max-width: 760px;
+  font-family: "Manrope", "Segoe UI", sans-serif;
+  font-size: clamp(3rem, 8vw, 5.1rem);
+  line-height: 0.96;
+  letter-spacing: -0.06em;
+}
+
+.heroSection h1 span,
+.sellerContent h2 span {
+  color: #bcb4ff;
+}
+
+.heroSection p {
+  max-width: 640px;
+  margin: 24px 0 0;
+  color: rgba(196, 193, 216, 0.76);
+  line-height: 1.8;
+}
+
+.heroActions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 28px;
+}
+
+.secondaryCta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 18px;
+  border-radius: 14px;
+  color: #ffffff;
+  font-weight: 700;
+  background: rgba(45, 52, 76, 0.94);
+}
+
+.searchBarSection {
+  padding-bottom: 34px;
+}
+
+.searchShell {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: 64px;
+  padding: 0 18px;
+  border-radius: 18px;
+  background: rgba(24, 30, 51, 0.98);
+  box-shadow:
+    0 20px 50px rgba(12, 16, 31, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.searchIcon {
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 2px rgba(173, 168, 201, 0.72);
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.searchIcon::after {
+  content: "";
+  position: absolute;
+  right: -4px;
+  bottom: -4px;
+  width: 7px;
+  height: 2px;
+  border-radius: 999px;
+  background: rgba(173, 168, 201, 0.72);
+  transform: rotate(45deg);
+}
+
+.searchPlaceholder {
+  color: rgba(146, 142, 171, 0.78);
+  flex: 1 1 auto;
+}
+
+.searchTags {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.searchTag {
+  min-height: 30px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: rgba(36, 43, 68, 0.98);
+  color: rgba(205, 202, 224, 0.78);
+  font-size: 0.75rem;
+}
+
+.featuredSection {
+  padding: 6px 0 40px;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.sectionHeader h2,
+.sellerContent h2 {
+  margin: 0;
+  font-family: "Manrope", "Segoe UI", sans-serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.02;
+  letter-spacing: -0.05em;
+}
+
+.sectionHeader p,
+.sellerContent p {
+  margin: 8px 0 0;
+  color: rgba(196, 193, 216, 0.76);
+  line-height: 1.7;
+}
+
+.sectionHeader a {
+  color: #d8d3ff;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.notesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.noteCard,
+.sellerSection,
+.footer {
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(24, 30, 51, 0.98), rgba(20, 26, 44, 0.98));
+  box-shadow:
+    0 24px 60px rgba(13, 17, 32, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.noteCard {
+  padding: 14px;
+}
+
+.notePreview {
+  position: relative;
+  min-height: 208px;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.previewcosmic {
+  background:
+    radial-gradient(circle at center, rgba(173, 221, 255, 0.7), transparent 6%),
+    radial-gradient(circle at center, rgba(102, 136, 255, 0.2), transparent 36%),
+    linear-gradient(180deg, #101a30 0%, #16233f 100%);
+}
+
+.previewclinical {
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.92), rgba(237, 237, 243, 0.98)),
+    linear-gradient(180deg, #f1d4c8 0%, #d8b8aa 100%);
+}
+
+.previewcode {
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.96), rgba(236, 238, 242, 0.98)),
+    linear-gradient(180deg, #e7e8ec 0%, #ccd0d8 100%);
+}
+
+.previewBadge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  min-height: 24px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: rgba(13, 18, 36, 0.74);
+  color: #f5f3ff;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.noteMeta,
+.noteFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.noteMeta {
+  padding-top: 12px;
+  color: rgba(158, 154, 186, 0.74);
+  font-size: 0.74rem;
+}
+
+.noteCard h3 {
+  margin: 12px 0 8px;
+  font-family: "Manrope", "Segoe UI", sans-serif;
+  font-size: 1.18rem;
+  letter-spacing: -0.03em;
+}
+
+.noteCard p {
+  margin: 0;
+  color: rgba(196, 193, 216, 0.72);
+  line-height: 1.65;
+}
+
+.noteFooter {
+  padding-top: 18px;
+}
+
+.noteFooter strong {
+  font-size: 1.45rem;
+}
+
+.cardAction {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  color: #ffffff;
+  font-size: 1.15rem;
+  background: linear-gradient(135deg, #5146f0 0%, #7a44ff 100%);
+}
+
+.sellerSection {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 420px);
+  gap: 26px;
+  padding: 30px;
+  margin-top: 12px;
+}
+
+.sellerContent {
+  display: grid;
+  align-content: center;
+  gap: 22px;
+}
+
+.sellingPoints {
+  display: grid;
+  gap: 12px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.sellingPoints li {
+  position: relative;
+  padding-left: 22px;
+  color: rgba(214, 211, 231, 0.82);
+}
+
+.sellingPoints li::before {
+  content: "";
+  position: absolute;
+  top: 9px;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #5146f0 0%, #7a44ff 100%);
+}
+
+.sellerButton {
+  width: fit-content;
+  background: #ffffff;
+  color: #101726;
+  box-shadow: none;
+}
+
+.dashboardMock {
+  display: grid;
+  place-items: center;
+}
+
+.dashboardMockInner {
+  width: min(100%, 360px);
+  min-height: 340px;
+  padding: 20px;
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at top right, rgba(88, 70, 255, 0.14), transparent 20%),
+    linear-gradient(180deg, rgba(8, 18, 30, 0.98), rgba(10, 22, 36, 0.98));
+  box-shadow:
+    0 32px 80px rgba(5, 11, 21, 0.46),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.mockToolbar {
+  height: 18px;
+  border-radius: 999px;
+  background: rgba(83, 100, 124, 0.18);
+}
+
+.mockGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.mockGrid span {
+  display: block;
+  aspect-ratio: 1;
+  border-radius: 12px;
+  background: rgba(90, 116, 146, 0.14);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.dashboardMockInner p {
+  margin: 32px 0 0;
+  text-align: center;
+  color: rgba(218, 230, 241, 0.88);
+  font-weight: 700;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 22px 24px;
+  margin-top: 26px;
+}
+
+.footer strong {
+  display: block;
+  margin-bottom: 6px;
+  font-family: "Manrope", "Segoe UI", sans-serif;
+}
+
+.footer p {
+  margin: 0;
+  color: rgba(196, 193, 216, 0.72);
+}
+
+@media (max-width: 1024px) {
+  .notesGrid,
+  .sellerSection {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboardMock {
+    justify-items: stretch;
+  }
+}
+
+@media (max-width: 760px) {
+  .homePage {
+    padding: 16px 16px 32px;
+  }
+
+  .topbar,
+  .sectionHeader,
+  .footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .primaryNav,
+  .authLinks,
+  .searchTags,
+  .footerLinks,
+  .heroActions {
+    flex-wrap: wrap;
+  }
+
+  .searchShell {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 16px;
+  }
+
+  .searchTags {
+    justify-content: flex-start;
+  }
+
+  .notesGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .sellerSection {
+    padding: 22px;
+  }
+}
