@@ -23,7 +23,10 @@ const sanitizeUser = (user) => ({
   id: user._id.toString(),
   name: user.name,
   email: user.email,
-  isVerified: user.isVerified
+  role: user.role,
+  avatar: user.avatar,
+  isVerified: user.isVerified,
+  createdAt: user.createdAt
 });
 
 const generateVerificationToken = () => crypto.randomBytes(32).toString("hex");

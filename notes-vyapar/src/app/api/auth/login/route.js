@@ -23,12 +23,13 @@ export async function POST(req) {
     await connectDB();
 
     const body = await req.json();
-    const { token } = await loginUser(body);
+    const { token, user } = await loginUser(body);
 
     return Response.json({
       success: true,
       message: "Login successful",
-      token
+      token,
+      user
     });
   } catch (error) {
     return Response.json(

@@ -1,3 +1,15 @@
+"use client";
+
+import { useContext } from "react";
+
+import AuthContext from "@/presentation/context/AuthContext";
+
 export default function useAuth() {
-  return { user: null, signIn: async () => {}, signOut: async () => {} };
+  const context = useContext(AuthContext);
+
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+
+  return context;
 }

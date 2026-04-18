@@ -1,0 +1,686 @@
+.dashboardPage {
+  position: relative;
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 268px minmax(0, 1fr);
+  background:
+    radial-gradient(circle at 85% 100%, rgba(87, 64, 255, 0.12), transparent 24%),
+    linear-gradient(180deg, #0f1528 0%, #12192c 100%);
+}
+
+.loadingShell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: linear-gradient(180deg, #0d1325 0%, #10182d 100%);
+}
+
+.loadingCard {
+  width: min(100%, 360px);
+  padding: 32px;
+  border-radius: 28px;
+  background: rgba(25, 31, 52, 0.92);
+  box-shadow:
+    0 30px 60px rgba(79, 70, 229, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  text-align: center;
+}
+
+.loadingCard p {
+  margin: 0;
+  color: rgba(205, 202, 224, 0.82);
+}
+
+.loadingPulse {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 18px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  box-shadow: 0 0 30px rgba(79, 70, 229, 0.38);
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 16px 14px 20px;
+  background: #181f34;
+  box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.04);
+}
+
+.sidebarBrand,
+.topbarBrand {
+  font-family: "Manrope", "Segoe UI", sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.sidebarBrand {
+  padding: 0 14px 16px;
+  font-size: 1.85rem;
+  margin-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.profileCard {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 14px 16px 44px;
+  border-radius: 18px;
+  background: transparent;
+}
+
+.profileCard h2,
+.profileCard p {
+  margin: 0;
+}
+
+.profileCard h2 {
+  font-size: 1rem;
+}
+
+.profileCard p {
+  margin-top: 4px;
+  color: rgba(187, 183, 211, 0.74);
+  font-size: 0.88rem;
+}
+
+.profileBadge {
+  position: absolute;
+  left: 10px;
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #6747ff 0%, #8f4bff 100%);
+  box-shadow: 0 8px 18px rgba(93, 57, 245, 0.32);
+}
+
+.profileBadge svg {
+  width: 13px;
+  height: 13px;
+  display: block;
+  fill: currentColor;
+}
+
+.sidebarAvatar,
+.topbarAvatar,
+.avatarFallback {
+  border-radius: 999px;
+  object-fit: cover;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+}
+
+.sidebarAvatar,
+.avatarFallback {
+  width: 48px;
+  height: 48px;
+}
+
+.topbarAvatar {
+  width: 34px;
+  height: 34px;
+  box-shadow: 0 0 0 2px rgba(103, 71, 255, 0.18);
+}
+
+.avatarFallback {
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  color: #ffffff;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.sidebarNav {
+  display: grid;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.navItem,
+.activeNavItem,
+.logoutButton {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: 18px;
+  color: rgba(210, 206, 230, 0.82);
+  transition:
+    background-color 300ms ease-out,
+    color 300ms ease-out,
+    transform 300ms ease-out;
+}
+
+.navItem:hover,
+.logoutButton:hover:not(:disabled) {
+  background: rgba(50, 57, 92, 0.6);
+  color: #ffffff;
+  transform: translateX(2px);
+}
+
+.activeNavItem {
+  background: rgba(46, 53, 96, 0.96);
+  color: #ffffff;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.navIcon,
+.metricIcon {
+  width: 18px;
+  height: 18px;
+  color: currentColor;
+  flex: 0 0 auto;
+}
+
+.navIcon svg,
+.metricIcon svg {
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+  display: block;
+}
+
+.sidebarFooter {
+  display: grid;
+  gap: 12px;
+}
+
+.primarySidebarButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  border-radius: 18px;
+  color: #ffffff;
+  font-weight: 700;
+  background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 100%);
+  box-shadow: 0 18px 36px rgba(92, 74, 237, 0.3);
+}
+
+.logoutButton {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.logoutButton:disabled {
+  opacity: 0.72;
+  cursor: progress;
+}
+
+.contentArea {
+  display: grid;
+  grid-template-rows: auto auto auto 1fr auto;
+  gap: 18px;
+  padding: 0 28px 28px;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 64px;
+  padding: 0 14px 0 28px;
+  margin: 0 -28px;
+  background: #12192c;
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.mobileMenuButton,
+.mobileMenuClose {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: transparent;
+  color: #f8f7ff;
+  cursor: pointer;
+}
+
+.mobileMenuButton {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: rgba(35, 42, 70, 0.9);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.mobileMenuButton svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+  fill: currentColor;
+}
+
+.topbarNav,
+.topbarProfile,
+.footerLinks {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.topbarNav a,
+.footerLinks a {
+  color: rgba(205, 202, 224, 0.72);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.topbarNav a:hover,
+.footerLinks a:hover {
+  color: #ffffff;
+}
+
+.topbarProfile {
+  gap: 10px;
+  padding-right: 2px;
+}
+
+.mobileMenuPanel {
+  display: none;
+}
+
+.mobileMenuHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.mobileMenuIdentity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mobileMenuIdentity strong,
+.mobileMenuIdentity p {
+  margin: 0;
+}
+
+.mobileMenuIdentity p {
+  margin-top: 4px;
+  color: rgba(187, 183, 211, 0.74);
+  font-size: 0.88rem;
+}
+
+.mobileMenuAvatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  object-fit: cover;
+  flex: 0 0 auto;
+  box-shadow: 0 0 0 2px rgba(103, 71, 255, 0.18);
+}
+
+.mobileMenuClose {
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: rgba(32, 38, 63, 0.96);
+}
+
+.mobileMenuLinks,
+.mobileMenuActions {
+  display: grid;
+  gap: 10px;
+}
+
+.profileStatus {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(26, 33, 57, 0.9);
+  color: rgba(210, 206, 230, 0.88);
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.hero h1,
+.panelHeader h2 {
+  margin: 0;
+  font-family: "Manrope", "Segoe UI", sans-serif;
+  letter-spacing: -0.04em;
+}
+
+.hero h1 {
+  font-size: clamp(2.05rem, 4vw, 2.85rem);
+}
+
+.hero p,
+.panelHeader p,
+.metricCard p,
+.footer p,
+.identityCell p,
+.emptyState p {
+  margin: 0;
+  color: rgba(196, 193, 216, 0.76);
+  line-height: 1.6;
+}
+
+.hero p {
+  margin-top: 6px;
+  max-width: 660px;
+}
+
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.metricCard,
+.activityPanel,
+.footer {
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(25, 32, 54, 0.98), rgba(22, 28, 47, 0.98));
+  box-shadow:
+    0 24px 60px rgba(16, 19, 39, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.metricCard {
+  min-height: 126px;
+  padding: 18px 20px;
+}
+
+.metricIcon {
+  width: 18px;
+  height: 18px;
+  color: #b8b2ed;
+  margin-bottom: 18px;
+}
+
+.metricCard span {
+  display: block;
+  color: rgba(183, 177, 207, 0.72);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.metricCard strong {
+  display: block;
+  margin-top: 12px;
+  font-size: 2rem;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.metricCard p {
+  margin-top: 10px;
+}
+
+.activityPanel {
+  padding: 18px 22px 0;
+}
+
+.panelHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.panelHeader p {
+  margin-top: 8px;
+}
+
+.panelHeader a {
+  color: #c9c5ea;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.activityTable {
+  overflow: hidden;
+  border-radius: 0 0 20px 20px;
+  background: transparent;
+}
+
+.tableHead,
+.emptyTableState {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) repeat(3, minmax(120px, 1fr));
+  gap: 16px;
+  align-items: center;
+  padding: 18px 20px;
+}
+
+.tableHead {
+  color: rgba(183, 177, 207, 0.7);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+}
+
+.emptyTableState {
+  min-height: 164px;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.identityCell {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.identityCell strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 1rem;
+}
+
+.identityCell p,
+.roleValue {
+  word-break: break-word;
+}
+
+.placeholderThumb {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background:
+    radial-gradient(circle at 35% 35%, rgba(115, 250, 255, 0.32), transparent 26%),
+    linear-gradient(180deg, rgba(36, 66, 96, 0.9), rgba(28, 44, 69, 0.9));
+  color: #d7f6ff;
+  box-shadow: 0 0 24px rgba(90, 219, 255, 0.12);
+}
+
+.placeholderThumb svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+  fill: currentColor;
+}
+
+.liveBadge,
+.processingBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 72px;
+  min-height: 24px;
+  padding: 0 12px;
+  border-radius: 999px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+.liveBadge {
+  background: rgba(30, 64, 175, 0.42);
+  color: #c6d8ff;
+}
+
+.processingBadge {
+  background: rgba(91, 33, 182, 0.34);
+  color: #dfd1ff;
+}
+
+.priceValue {
+  font-weight: 700;
+  color: #f4f1ff;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 22px 24px;
+}
+
+.footer strong {
+  display: block;
+  margin-bottom: 8px;
+  font-family: "Manrope", "Segoe UI", sans-serif;
+}
+
+.floatingUploadButton {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 20;
+  width: 54px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #5b4cff 0%, #7b4dff 100%);
+  box-shadow:
+    0 18px 36px rgba(91, 76, 255, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+
+.floatingUploadButton svg {
+  width: 22px;
+  height: 22px;
+  display: block;
+  fill: currentColor;
+}
+
+@media (max-width: 1100px) {
+  .dashboardPage {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 860px) {
+  .sidebar {
+    display: none;
+  }
+
+  .contentArea {
+    padding-top: 0;
+  }
+
+  .metricsGrid,
+  .tableHead,
+  .emptyTableState,
+  .footer,
+  .topbar {
+    grid-template-columns: 1fr;
+  }
+
+  .metricsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .topbar,
+  .panelHeader,
+  .footer {
+    align-items: flex-start;
+  }
+
+  .topbarNav,
+  .topbarProfile,
+  .footerLinks {
+    flex-wrap: wrap;
+  }
+
+  .topbar {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+  }
+
+  .mobileMenuButton {
+    display: inline-flex;
+  }
+
+  .mobileMenuPanel {
+    display: grid;
+    gap: 16px;
+    max-height: 0;
+    overflow: hidden;
+    padding: 0 18px;
+    border-radius: 18px;
+    background: rgba(24, 30, 51, 0.98);
+    box-shadow:
+      0 24px 60px rgba(16, 19, 39, 0.34),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    transition:
+      max-height 350ms ease-out,
+      padding 350ms ease-out;
+  }
+
+  .mobileMenuPanelOpen {
+    max-height: 520px;
+    padding: 18px;
+  }
+
+  .mobileMenuClose {
+    display: inline-flex;
+  }
+
+  .tableHead {
+    display: none;
+  }
+
+  .emptyTableState {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+}
+
+@media (max-width: 640px) {
+  .contentArea {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .activityPanel,
+  .metricCard,
+  .footer {
+    border-radius: 22px;
+  }
+
+  .topbar {
+    padding-left: 16px;
+    padding-right: 16px;
+    margin-left: -16px;
+    margin-right: -16px;
+  }
+}
