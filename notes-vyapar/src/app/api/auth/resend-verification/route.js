@@ -1,7 +1,7 @@
-import {connectDB} from "@/lib/db";
-import User from "@models/User";
+import connectDB from "@/infrastructure/database/mongodb";
+import User from "@/domain/entities/User";
 import crypto from "crypto";
-import {sendEmail} from "@/lib/email";
+import {sendEmail} from "@/infrastructure/email/mailer";
 
 
 
