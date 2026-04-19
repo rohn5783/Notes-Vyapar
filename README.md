@@ -2,7 +2,7 @@
 
 Curating Knowledge for the Future. **Notes Vyapar** is a premium, modern platform designed for students, educators, and lifelong learners to easily buy, sell, and share high-quality, verified study notes and academic artifacts.
 
-🔗 **[Live Platform URL](https://notes-vyapar-env0bin8m-rohn5783s-projects.vercel.app/)**
+🔗 **[Live Platform URL](https://notes-vyapar.vercel.app/)**
 
 ---
 
