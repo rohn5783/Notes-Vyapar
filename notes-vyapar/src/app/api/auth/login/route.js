@@ -19,6 +19,19 @@ const getStatusCode = (message) => {
 };
 
 export async function POST(req) {
+
+
+
+  // if (!user.isVerified) {
+  // return Response.json(
+  //   {
+  //     message: "Email not verified",
+  //     isVerified: false,
+  //     email: user.email
+  //   },
+  //   { status: 403 }
+  // );
+
   try {
     await connectDB();
 
@@ -40,4 +53,5 @@ export async function POST(req) {
       { status: getStatusCode(error.message) }
     );
   }
+  
 }

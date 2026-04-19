@@ -1,5 +1,7 @@
 import "./globals.scss";
 import { AuthProvider } from "@/presentation/context/AuthContext";
+import { ThemeProvider } from "@/presentation/context/ThemeContext";
+import LenisProvider from "@/presentation/components/layout/LenisProvider";
 
 export const metadata = {
   title: "Notes Vyapar",
@@ -8,9 +10,13 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body>
-        <AuthProvider>{children}</AuthProvider>
+    <html lang="en" suppressHydrationWarning>
+      <body suppressHydrationWarning>
+        <LenisProvider>
+          <ThemeProvider>
+            <AuthProvider>{children}</AuthProvider>
+          </ThemeProvider>
+        </LenisProvider>
       </body>
     </html>
   );

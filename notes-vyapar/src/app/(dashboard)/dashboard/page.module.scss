@@ -6,6 +6,13 @@
   background:
     radial-gradient(circle at 85% 100%, rgba(87, 64, 255, 0.12), transparent 24%),
     linear-gradient(180deg, #0f1528 0%, #12192c 100%);
+  transition: background 0.4s ease;
+
+  :global([data-theme="light"]) & {
+    background:
+      radial-gradient(circle at 85% 100%, rgba(87, 64, 255, 0.05), transparent 24%),
+      linear-gradient(180deg, #f8f9fc 0%, #eef0f7 100%);
+  }
 }
 
 .loadingShell {
@@ -49,6 +56,12 @@
   padding: 16px 14px 20px;
   background: #181f34;
   box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.04);
+  transition: background 0.4s ease;
+
+  :global([data-theme="light"]) & {
+    background: #ffffff;
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.05);
+  }
 }
 
 .sidebarBrand,
@@ -88,6 +101,10 @@
   margin-top: 4px;
   color: rgba(187, 183, 211, 0.74);
   font-size: 0.88rem;
+
+  :global([data-theme="light"]) & {
+    color: rgba(71, 85, 105, 0.9);
+  }
 }
 
 .profileBadge {
@@ -166,12 +183,23 @@
   background: rgba(50, 57, 92, 0.6);
   color: #ffffff;
   transform: translateX(2px);
+
+  :global([data-theme="light"]) & {
+    background: rgba(241, 245, 249, 0.8);
+    color: #0f172a;
+  }
 }
 
 .activeNavItem {
   background: rgba(46, 53, 96, 0.96);
   color: #ffffff;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+
+  :global([data-theme="light"]) & {
+    background: rgba(226, 232, 240, 0.9);
+    color: #0f172a;
+    box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.04);
+  }
 }
 
 .navIcon,
@@ -237,6 +265,12 @@
   margin: 0 -28px;
   background: #12192c;
   box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.04);
+  transition: background 0.4s ease;
+
+  :global([data-theme="light"]) & {
+    background: rgba(255, 255, 255, 0.85);
+    box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+  }
 }
 
 .mobileMenuButton,
@@ -370,6 +404,10 @@
   margin: 0;
   color: rgba(196, 193, 216, 0.76);
   line-height: 1.6;
+
+  :global([data-theme="light"]) & {
+    color: rgba(71, 85, 105, 0.9);
+  }
 }
 
 .hero p {
@@ -391,6 +429,12 @@
   box-shadow:
     0 24px 60px rgba(16, 19, 39, 0.34),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  transition: background 0.4s ease, box-shadow 0.4s ease;
+
+  :global([data-theme="light"]) & {
+    background: linear-gradient(180deg, #ffffff, #f8fafc);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05), inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+  }
 }
 
 .metricCard {
@@ -411,6 +455,10 @@
   font-size: 0.72rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
+
+  :global([data-theme="light"]) & {
+    color: rgba(71, 85, 105, 0.85);
+  }
 }
 
 .metricCard strong {
@@ -467,6 +515,10 @@
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.18em;
+
+  :global([data-theme="light"]) & {
+    color: rgba(71, 85, 105, 0.85);
+  }
 }
 
 .emptyTableState {

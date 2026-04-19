@@ -3,6 +3,8 @@
 import { startTransition, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import ThemeToggle from "@/presentation/components/ui/ThemeToggle";
+import { MotionLink, MotionButton } from "@/presentation/components/ui/MotionElements";
 
 import useAuth from "@/presentation/hooks/useAuth";
 
@@ -192,22 +194,22 @@ export default function DashboardPage() {
         </div>
 
         <div className={styles.sidebarFooter}>
-          <Link href="/my-notes" className={styles.primarySidebarButton}>
+          {/* <Link href="/my-notes" className={styles.primarySidebarButton}>
             Upload New Note
-          </Link>
+          </Link> */}
 
-          <button type="button" className={styles.logoutButton} onClick={handleLogout} disabled={isLoggingOut}>
+          <MotionButton type="button" className={styles.logoutButton} onClick={handleLogout} disabled={isLoggingOut}>
             <span className={styles.navIcon}>
               <DashboardIcon type="logout" />
             </span>
             {isLoggingOut ? "Logging out..." : "Logout"}
-          </button>
+          </MotionButton>
         </div>
       </aside>
 
       <section className={styles.contentArea}>
         <header className={styles.topbar}>
-          <button
+          <MotionButton
             type="button"
             className={styles.mobileMenuButton}
             onClick={handleMobileMenuToggle}
@@ -216,7 +218,7 @@ export default function DashboardPage() {
             aria-label="Toggle profile options"
           >
             <DashboardIcon type="menu" />
-          </button>
+          </MotionButton>
 
           <nav className={styles.topbarNav} aria-label="Primary navigation">
             {PRIMARY_NAV.map((item) => (
@@ -226,6 +228,7 @@ export default function DashboardPage() {
             ))}
           </nav>
           <div className={styles.topbarProfile}>
+            <ThemeToggle />
             <Avatar src={user.avatar} name={user.name} className={styles.topbarAvatar} />
           </div>
         </header>
@@ -243,13 +246,13 @@ export default function DashboardPage() {
                 <p>{user.isVerified ? "Premium Curator" : "Curator access pending"}</p>
               </div>
             </div>
-            <button
+            <MotionButton
               type="button"
               className={styles.mobileMenuClose}
               onClick={handleMobileMenuToggle}
             >
               Close
-            </button>
+            </MotionButton>
           </div>
 
           <nav className={styles.mobileMenuLinks} aria-label="Mobile profile options">
@@ -281,15 +284,15 @@ export default function DashboardPage() {
           </nav>
 
           <div className={styles.mobileMenuActions}>
-            <Link
+            <MotionLink
               href="/my-notes"
               className={styles.primarySidebarButton}
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Upload New Note
-            </Link>
+            </MotionLink>
 
-            <button
+            <MotionButton
               type="button"
               className={styles.logoutButton}
               onClick={handleLogout}
@@ -299,7 +302,7 @@ export default function DashboardPage() {
                 <DashboardIcon type="logout" />
               </span>
               {isLoggingOut ? "Logging out..." : "Logout"}
-            </button>
+            </MotionButton>
           </div>
         </section>
 
@@ -375,9 +378,9 @@ export default function DashboardPage() {
         </footer>
       </section>
 
-      <Link href="/my-notes" className={styles.floatingUploadButton} aria-label="Upload new note">
+      <MotionLink href="/my-notes" className={styles.floatingUploadButton} aria-label="Upload new note">
         <DashboardIcon type="plus" />
-      </Link>
+      </MotionLink>
     </main>
   );
 }

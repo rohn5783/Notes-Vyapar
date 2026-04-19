@@ -3,6 +3,7 @@
 import { startTransition, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { MotionButton } from "@/presentation/components/ui/MotionElements";
 
 import useAuth from "@/presentation/hooks/useAuth";
 
@@ -294,13 +295,13 @@ export default function AuthForm({
             </div>
           ) : null}
 
-          <button
+          <MotionButton
             type="submit"
             className={styles.submitButton}
             disabled={isSubmitting || status === "loading"}
           >
             {isSubmitting ? "Please wait..." : copy.cta}
-          </button>
+          </MotionButton>
         </form>
 
         <div className={styles.cardFooter}>

@@ -1,10 +1,21 @@
 @import "../styles/base/reset";
 @import "../styles/base/typography";
-@import "../styles/themes/light";
 
 :root {
   color-scheme: dark;
+  --bg-base: #0c1324;
+  --text-base: #f8f7ff;
+  --toggle-bg: rgba(255, 255, 255, 0.08);
+  --toggle-bg-hover: rgba(255, 255, 255, 0.15);
   font-family: "Inter", "Segoe UI", sans-serif;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg-base: #f8f9fc;
+  --text-base: #0e121b;
+  --toggle-bg: rgba(0, 0, 0, 0.08);
+  --toggle-bg-hover: rgba(0, 0, 0, 0.15);
 }
 
 html {
@@ -14,8 +25,9 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
-  background: #0c1324;
-  color: #f8f7ff;
+  background: var(--bg-base);
+  color: var(--text-base);
+  transition: background 0.4s ease, color 0.4s ease;
 }
 
 a {
@@ -28,4 +40,31 @@ input,
 textarea,
 select {
   font: inherit;
+}
+
+/* View Transition API - Left to Right Sweep */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.6s;
+  animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+  mix-blend-mode: normal;
+}
+
+::view-transition-new(root) {
+  animation-name: sweep-left-to-right;
+  z-index: 2;
+}
+
+::view-transition-old(root) {
+  animation: none;
+  z-index: 1;
+}
+
+@keyframes sweep-left-to-right {
+  from {
+    clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+  }
+  to {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  }
 }

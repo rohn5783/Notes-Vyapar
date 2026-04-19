@@ -1,0 +1,60 @@
+.toggleBtn {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: var(--toggle-bg, rgba(255, 255, 255, 0.08));
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+
+  &:hover {
+    background: var(--toggle-bg-hover, rgba(255, 255, 255, 0.15));
+  }
+}
+
+.iconContainer {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  color: var(--text-color, #f8f6ff);
+}
+
+.sun,
+.moon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease;
+}
+
+/* Base Light State */
+.toggleBtn.light {
+  .sun {
+    transform: rotate(0deg) scale(1);
+    opacity: 1;
+  }
+  .moon {
+    transform: rotate(-90deg) scale(0);
+    opacity: 0;
+  }
+}
+
+/* Base Dark State */
+.toggleBtn.dark {
+  .sun {
+    transform: rotate(90deg) scale(0);
+    opacity: 0;
+  }
+  .moon {
+    transform: rotate(0deg) scale(1);
+    opacity: 1;
+  }
+}

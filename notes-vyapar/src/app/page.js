@@ -1,4 +1,6 @@
 import Link from "next/link";
+import ThemeToggle from "@/presentation/components/ui/ThemeToggle";
+import { MotionLink } from "@/presentation/components/ui/MotionElements";
 
 import styles from "./page.module.scss";
 
@@ -52,12 +54,13 @@ export default function HomePage() {
         </nav>
 
         <div className={styles.authLinks}>
-          <Link href="/login" className={styles.loginLink}>
+          <ThemeToggle />
+          <MotionLink href="/login" className={styles.loginLink}>
             Log In
-          </Link>
-          <Link href="/register" className={styles.signupButton}>
+          </MotionLink>
+          <MotionLink href="/register" className={styles.signupButton}>
             Sign Up
-          </Link>
+          </MotionLink>
         </div>
       </header>
 
@@ -73,12 +76,12 @@ export default function HomePage() {
         </p>
 
         <div className={styles.heroActions}>
-          <Link href="/notes" className={styles.primaryCta}>
+          <MotionLink href="/notes" className={styles.primaryCta}>
             Explore Notes
-          </Link>
-          <Link href="/register" className={styles.secondaryCta}>
+          </MotionLink>
+          <MotionLink href="/register" className={styles.secondaryCta}>
             Upload Yours
-          </Link>
+          </MotionLink>
         </div>
       </section>
 
@@ -124,9 +127,9 @@ export default function HomePage() {
 
               <div className={styles.noteFooter}>
                 <strong>{note.price}</strong>
-                <Link href="/login" className={styles.cardAction} aria-label={`Open ${note.title}`}>
+                <MotionLink href="/login" className={styles.cardAction} aria-label={`Open ${note.title}`}>
                   +
-                </Link>
+                </MotionLink>
               </div>
             </article>
           ))}
@@ -152,9 +155,9 @@ export default function HomePage() {
             ))}
           </ul>
 
-          <Link href="/register" className={styles.sellerButton}>
+          <MotionLink href="/register" className={styles.sellerButton}>
             Start Selling Today
-          </Link>
+          </MotionLink>
         </div>
 
         <div className={styles.dashboardMock}>

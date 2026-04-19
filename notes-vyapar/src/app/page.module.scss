@@ -8,6 +8,15 @@
     radial-gradient(circle at 88% 88%, rgba(91, 76, 255, 0.14), transparent 24%),
     linear-gradient(180deg, #0d1426 0%, #12192c 100%);
   color: #f8f6ff;
+  transition: background 0.4s ease, color 0.4s ease;
+
+  :global([data-theme="light"]) & {
+    background:
+      radial-gradient(circle at 12% 12%, rgba(91, 76, 255, 0.08), transparent 26%),
+      radial-gradient(circle at 88% 88%, rgba(91, 76, 255, 0.06), transparent 24%),
+      linear-gradient(180deg, #f8f9fc 0%, #eef0f7 100%);
+    color: #111827;
+  }
 }
 
 .glowOrbLeft,
@@ -56,6 +65,12 @@
   border-radius: 18px;
   background: rgba(14, 20, 38, 0.82);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  transition: background 0.4s ease;
+
+  :global([data-theme="light"]) & {
+    background: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(0, 0, 0, 0.04);
+  }
 }
 
 .brand {
@@ -81,6 +96,10 @@
   color: rgba(210, 206, 230, 0.72);
   font-size: 0.9rem;
   font-weight: 600;
+
+  :global([data-theme="light"]) & {
+    color: rgba(71, 85, 105, 0.85);
+  }
 }
 
 .signupButton,
@@ -138,6 +157,10 @@
   margin: 24px 0 0;
   color: rgba(196, 193, 216, 0.76);
   line-height: 1.8;
+
+  :global([data-theme="light"]) & {
+    color: rgba(71, 85, 105, 0.9);
+  }
 }
 
 .heroActions {
@@ -174,6 +197,11 @@
   box-shadow:
     0 20px 50px rgba(12, 16, 31, 0.28),
     inset 0 1px 0 rgba(255, 255, 255, 0.04);
+
+  :global([data-theme="light"]) & {
+    background: #ffffff;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06), inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+  }
 }
 
 .searchIcon {
@@ -244,6 +272,10 @@
   margin: 8px 0 0;
   color: rgba(196, 193, 216, 0.76);
   line-height: 1.7;
+
+  :global([data-theme="light"]) & {
+    color: rgba(71, 85, 105, 0.9);
+  }
 }
 
 .sectionHeader a {
@@ -266,6 +298,12 @@
   box-shadow:
     0 24px 60px rgba(13, 17, 32, 0.34),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  transition: background 0.4s ease, box-shadow 0.4s ease;
+
+  :global([data-theme="light"]) & {
+    background: linear-gradient(180deg, #ffffff, #f8fafc);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.05), inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+  }
 }
 
 .noteCard {
@@ -338,6 +376,10 @@
   margin: 0;
   color: rgba(196, 193, 216, 0.72);
   line-height: 1.65;
+
+  :global([data-theme="light"]) & {
+    color: rgba(71, 85, 105, 0.9);
+  }
 }
 
 .noteFooter {
@@ -469,6 +511,10 @@
 .footer p {
   margin: 0;
   color: rgba(196, 193, 216, 0.72);
+
+  :global([data-theme="light"]) & {
+    color: rgba(71, 85, 105, 0.9);
+  }
 }
 
 @media (max-width: 1024px) {
