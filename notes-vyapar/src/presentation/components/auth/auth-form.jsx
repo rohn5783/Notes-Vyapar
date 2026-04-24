@@ -211,9 +211,12 @@ export default function AuthForm({
           email: values.email.trim(),
           password: values.password
         });
-
+ if (result.user) {
+  localStorage.setItem("user", JSON.stringify(result.user));
+}
         setFeedback({
           type: "success",
+          
           message: result.message || "Login successful. Redirecting to your dashboard."
         });
 
