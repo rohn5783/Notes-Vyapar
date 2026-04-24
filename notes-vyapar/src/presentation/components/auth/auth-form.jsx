@@ -90,7 +90,9 @@ export default function AuthForm({
   mode = "login",
   registered = "",
   prefilledEmail = "",
-  loggedOut = ""
+  loggedOut = "",
+  verified = "",
+  verifyError = ""
 }) {
   const copy = COPY[mode] || COPY.login;
   const router = useRouter();
@@ -160,6 +162,26 @@ export default function AuthForm({
   }, [loggedOut, mode]);
 
   useEffect(() => {
+    if (mode === "login" && verified === "1") {
+      setFeedback({
+        type: "success",
+        message: prefilledEmail
+          ? `Email verified for ${prefilledEmail}. You can log in now.`
+          : "Email verified successfully. You can log in now."
+      });
+    }
+  }, [mode, prefilledEmail, verified]);
+
+  useEffect(() => {
+    if (mode === "login" && verifyError) {
+      setFeedback({
+        type: "error",
+        message: verifyError
+      });
+    }
+  }, [mode, verifyError]);
+
+  useEffect(() => {
     if (status === "ready" && isAuthenticated) {
       startTransition(() => {
         router.replace("/dashboard");
@@ -196,16 +218,25 @@ export default function AuthForm({
           password: values.password
         });
 
-        setFeedback({
-          type: "success",
-          message: result.message || "Account created successfully. Please verify your email."
-        });
-
-        window.setTimeout(() => {
-          startTransition(() => {
-            router.push(`/login?registered=1&email=${encodeURIComponent(values.email.trim())}`);
+        if (result.emailVerificationSent) {
+          setFeedback({
+            type: "success",
+            message: result.message || "Account created successfully. Please verify your email."
           });
-        }, 1400);
+
+          window.setTimeout(() => {
+            startTransition(() => {
+              router.push(`/login?registered=1&email=${encodeURIComponent(values.email.trim())}`);
+            });
+          }, 1400);
+        } else {
+          setFeedback({
+            type: "error",
+            message:
+              result.message ||
+              "Account created, but we could not send the verification email. Please try again."
+          });
+        }
       } else {
         const result = await signIn({
           email: values.email.trim(),
@@ -283,6 +314,14 @@ export default function AuthForm({
               </div>
             </label>
           ))}
+
+          {mode === "login" ? (
+            <div className={styles.forgotPasswordRow}>
+              <Link href={`/forgot-password?email=${encodeURIComponent(values.email.trim())}`}>
+                Forgot password or need a new verification link?
+              </Link>
+            </div>
+          ) : null}
 
           <div className={styles.helperRow}>
             <span className={styles.helperDot} aria-hidden="true" />

@@ -1,18 +1,21 @@
 import { registerUser } from "@/application/services/auth.service";
 import connectDB from "@/infrastructure/database/mongodb";
+import { resolveRequestBaseUrl } from "@/lib/request-url";
 
 export async function POST(req) {
   try {
     await connectDB();
 
     const body = await req.json();
-    const { user, emailVerificationSent } = await registerUser(body);
+    const appUrl = resolveRequestBaseUrl(req);
+    const { user, emailVerificationSent } = await registerUser(body, { appUrl });
 
     return Response.json({
       success: true,
+      emailVerificationSent,
       message: emailVerificationSent
         ? "User registered successfully. Verification email sent."
-        : "Verification email could not be sent. Please try again.",
+        : "Account created, but verification email could not be sent right now.",
       user
     });
   } catch (error) {

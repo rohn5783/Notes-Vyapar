@@ -194,9 +194,7 @@ export default function DashboardPage() {
         </div>
 
         <div className={styles.sidebarFooter}>
-          {/* <Link href="/my-notes" className={styles.primarySidebarButton}>
-            Upload New Note
-          </Link> */}
+         
 
           <MotionButton type="button" className={styles.logoutButton} onClick={handleLogout} disabled={isLoggingOut}>
             <span className={styles.navIcon}>

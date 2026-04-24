@@ -42,11 +42,7 @@ export async function POST(req) {
       success: true,
       message: "Login successful",
       token,
-      user:{
-        id: user._id,
-        role: user.role,
-        email: user.email,
-      }
+      user
     });
   } catch (error) {
     return Response.json(

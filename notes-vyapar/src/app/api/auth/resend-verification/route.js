@@ -1,44 +1,44 @@
 import connectDB from "@/infrastructure/database/mongodb";
 import User from "@/domain/entities/User";
 import crypto from "crypto";
-import {sendEmail} from "@/infrastructure/email/mailer";
-
-
-
+import { sendVerificationEmail } from "@/infrastructure/email/mailer";
+import { resolveRequestBaseUrl } from "@/lib/request-url";
 
 export async function POST(req) {
   await connectDB();
 
   try {
     const { email } = await req.json();
+    const normalizedEmail = email?.trim().toLowerCase();
 
-    const user = await User.findOne({ email });
+    if (!normalizedEmail) {
+      return Response.json({ success: false, message: "Email is required" }, { status: 400 });
+    }
+
+    const user = await User.findOne({ email: normalizedEmail });
 
     if (!user) {
-      return Response.json({ message: "User not found" }, { status: 404 });
+      return Response.json({ success: false, message: "User not found" }, { status: 404 });
     }
 
     if (user.isVerified) {
-      return Response.json({ message: "Already verified" });
+      return Response.json({ success: true, message: "Already verified" });
     }
 
-    // ⏳ Cooldown check (1 min)
-    if (user.lastResend && Date.now() - user.lastResend < 60000) {
+    if (user.lastResend && Date.now() - user.lastResend < 60_000) {
       return Response.json(
-        { message: "Wait 1 minute before retry" },
+        { success: false, message: "Wait 1 minute before retry" },
         { status: 429 }
       );
     }
 
-    // 🛑 Limit attempts
     if (user.resendCount >= 5) {
       return Response.json(
-        { message: "Too many attempts" },
+        { success: false, message: "Too many attempts" },
         { status: 429 }
       );
     }
 
-    // 🔐 New token generate
     const token = crypto.randomBytes(32).toString("hex");
 
     user.verificationToken = token;
@@ -48,18 +48,20 @@ export async function POST(req) {
 
     await user.save();
 
-    // 📩 Send email
-    const verifyLink = `http://localhost:3000/verify-email?token=${token}`;
+    const appUrl = resolveRequestBaseUrl(req);
+    const verifyLink = `${appUrl}/verify-email?token=${encodeURIComponent(token)}`;
 
-    await sendEmail({
+    await sendVerificationEmail({
       to: user.email,
-      subject: "Verify your email",
-      html: `<a href="${verifyLink}">Click to verify</a>`
+      name: user.name,
+      verificationUrl: verifyLink
     });
 
-    return Response.json({ message: "Verification email sent" });
-
+    return Response.json({ success: true, message: "Verification email sent" });
   } catch (error) {
-    return Response.json({ message: "Server error" }, { status: 500 });
+    return Response.json(
+      { success: false, message: error.message || "Server error" },
+      { status: 500 }
+    );
   }
 }

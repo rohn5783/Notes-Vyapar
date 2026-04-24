@@ -9,6 +9,8 @@ export default async function LoginPage({ searchParams }) {
       registered={resolvedSearchParams?.registered || ""}
       prefilledEmail={resolvedSearchParams?.email || ""}
       loggedOut={resolvedSearchParams?.loggedOut || ""}
+      verified={resolvedSearchParams?.verified || ""}
+      verifyError={resolvedSearchParams?.verifyError || ""}
     />
   );
 }

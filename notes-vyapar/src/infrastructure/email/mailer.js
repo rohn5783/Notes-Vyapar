@@ -68,3 +68,24 @@ export async function sendVerificationEmail({ to, name, verificationUrl }) {
     text: `Hi ${name}, verify your email by visiting: ${verificationUrl}`
   });
 }
+
+export async function sendPasswordResetEmail({ to, name, resetUrl }) {
+  if (!resetUrl) {
+    throw new Error("Password reset URL is required");
+  }
+
+  return sendEmail({
+    to,
+    subject: "Reset your Notes Vyapar password",
+    html: `
+      <p>Hi ${name || "there"},</p>
+      <p>We received a request to reset your password for <strong>Notes Vyapar</strong>.</p>
+      <p>Use the link below to set a new password:</p>
+      <p><a href="${resetUrl}">Reset Password</a></p>
+      <p>This link will expire soon for your security.</p>
+      <p>If you did not request this, you can safely ignore this email.</p>
+      <p>Best regards,<br />The Notes Vyapar Team</p>
+    `,
+    text: `Hi ${name || "there"}, reset your password by visiting: ${resetUrl}`
+  });
+}

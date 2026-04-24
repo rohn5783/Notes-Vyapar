@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 
-import User from "@/domain/entities/User";
+import { verifyEmail } from "@/application/services/auth.service";
 import connectDB from "@/infrastructure/database/mongodb";
+import { resolveRequestBaseUrl } from "@/lib/request-url";
 
 const getStatusCode = (message) => {
   switch (message) {
@@ -14,67 +15,46 @@ const getStatusCode = (message) => {
   }
 };
 
-const removeDuplicateUsers = async (user) => {
-  await User.deleteMany({
-    email: user.email,
-    _id: { $ne: user._id }
+const createLoginRedirectUrl = (req, params = {}) => {
+  const loginUrl = new URL("/login", resolveRequestBaseUrl(req));
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value) {
+      loginUrl.searchParams.set(key, value);
+    }
   });
-};
 
-const verifyEmail = async (token) => {
-  if (!token) {
-    throw new Error("Verification token is required");
-  }
-
-  const user = await User.findOneAndUpdate(
-    {
-      verificationToken: token,
-      verificationTokenExpiry: { $gt: new Date() }
-    },
-    {
-      $set: { isVerified: true },
-      $unset: {
-        verificationToken: 1,
-        verificationTokenExpiry: 1
-      }
-    },
-    { new: true }
-  );
-
-  if (!user) {
-    throw new Error("Invalid, expired, or already used verification token");
-  }
-
-  await removeDuplicateUsers(user);
-  return user;
+  return loginUrl;
 };
 
 export async function GET(req) {
   try {
+    await connectDB();
+
     const { searchParams } = new URL(req.url);
     const token = searchParams.get("token");
 
     if (!token) {
-      return Response.json(
-        {
-          success: false,
-          message: "Verification token is required"
-        },
-        { status: 400 }
+      return NextResponse.redirect(
+        createLoginRedirectUrl(req, {
+          verifyError: "Verification token is required"
+        })
       );
     }
 
-    const redirectUrl = new URL(`/verify-email?token=${encodeURIComponent(token)}`, req.url);
-    return NextResponse.redirect(redirectUrl);
-  } catch (error) {
-    const message = error.message || "Something went wrong";
+    const result = await verifyEmail(token);
 
-    return Response.json(
-      {
-        success: false,
-        message
-      },
-      { status: getStatusCode(message) }
+    return NextResponse.redirect(
+      createLoginRedirectUrl(req, {
+        verified: "1",
+        email: result.user?.email || ""
+      })
+    );
+  } catch (error) {
+    return NextResponse.redirect(
+      createLoginRedirectUrl(req, {
+        verifyError: error.message || "Email verification failed"
+      })
     );
   }
 }

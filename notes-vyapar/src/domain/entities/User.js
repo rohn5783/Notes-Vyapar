@@ -41,11 +41,19 @@ const userSchema = new mongoose.Schema({
     default: null,
   },
   lastResend: Date,
-resendCount: {
+  resendCount: {
   type: Number,
   default: 0
 },
   verificationTokenExpiry: {
+    type: Date,
+    default: null,
+  },
+  passwordResetToken: {
+    type: String,
+    default: null,
+  },
+  passwordResetTokenExpiry: {
     type: Date,
     default: null,
   }
