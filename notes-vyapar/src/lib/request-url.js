@@ -1,3 +1,5 @@
+import os from "os";
+
 const LOCAL_HOSTNAMES = new Set(["localhost", "127.0.0.1", "::1"]);
 
 const normalizeBaseUrl = (value) => {
@@ -27,6 +29,37 @@ const isLocalBaseUrl = (value) => {
     return LOCAL_HOSTNAMES.has(parsed.hostname);
   } catch {
     return false;
+  }
+};
+
+const getLocalNetworkAddress = () => {
+  const interfaces = os.networkInterfaces();
+
+  for (const interfaceList of Object.values(interfaces)) {
+    for (const iface of interfaceList || []) {
+      if (iface.family === "IPv4" && !iface.internal) {
+        return iface.address;
+      }
+    }
+  }
+
+  return "";
+};
+
+const getLocalNetworkBaseUrl = (defaultOrigin = "http://localhost:3000") => {
+  const networkAddress = getLocalNetworkAddress();
+  if (!networkAddress) {
+    return "";
+  }
+
+  try {
+    const parsed = new URL(defaultOrigin);
+    const port = parsed.port || "3000";
+    const protocol = parsed.protocol.replace(":", "");
+
+    return `${protocol}://${networkAddress}:${port}`;
+  } catch {
+    return `http://${networkAddress}:3000`;
   }
 };
 
@@ -65,7 +98,13 @@ export const resolveRequestBaseUrl = (req) => {
   }
 
   if (requestOrigin) {
-    return requestOrigin;
+    const localNetworkOrigin = getLocalNetworkBaseUrl(requestOrigin);
+    return localNetworkOrigin || requestOrigin;
+  }
+
+  const localNetworkOrigin = getLocalNetworkBaseUrl(configuredCandidates[0] || "http://localhost:3000");
+  if (localNetworkOrigin) {
+    return localNetworkOrigin;
   }
 
   if (configuredCandidates.length) {
