@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 
-import styles from "./forgot-password.module.scss";
+import styles from "./forgot-password.module.css";
 
 const isEmail = (value) => /\S+@\S+\.\S+/.test(value);
 

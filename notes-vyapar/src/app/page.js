@@ -2,7 +2,7 @@ import Link from "next/link";
 import ThemeToggle from "@/presentation/components/ui/ThemeToggle";
 import { MotionLink } from "@/presentation/components/ui/MotionElements";
 
-import styles from "./page.module.scss";
+import styles from "./page.module.css";
 
 const FEATURED_NOTES = [
   {

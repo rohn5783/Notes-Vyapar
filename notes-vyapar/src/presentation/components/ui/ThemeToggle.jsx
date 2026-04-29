@@ -2,7 +2,7 @@
 
 import { useTheme } from "@/presentation/context/ThemeContext";
 import { MotionButton } from "@/presentation/components/ui/MotionElements";
-import styles from "./ThemeToggle.module.scss";
+import styles from "./ThemeToggle.module.css";
 
 export default function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();

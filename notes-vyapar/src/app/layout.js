@@ -1,4 +1,4 @@
-import "./globals.scss";
+import "./globals.css";
 import { AuthProvider } from "@/presentation/context/AuthContext";
 import { ThemeProvider } from "@/presentation/context/ThemeContext";
 import LenisProvider from "@/presentation/components/layout/LenisProvider";

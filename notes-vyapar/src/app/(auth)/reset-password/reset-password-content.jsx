@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 
-import styles from "./reset-password.module.scss";
+import styles from "./reset-password.module.css";
 
 const hasStrongPassword = (value) => value.length >= 8 && /[^A-Za-z0-9]/.test(value);
 const safeDecodeURIComponent = (value) => {

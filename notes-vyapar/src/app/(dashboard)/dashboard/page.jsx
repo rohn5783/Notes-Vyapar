@@ -8,7 +8,7 @@ import { MotionLink, MotionButton } from "@/presentation/components/ui/MotionEle
 
 import useAuth from "@/presentation/hooks/useAuth";
 
-import styles from "./page.module.scss";
+import styles from "./page.module.css";
 
 const PRIMARY_NAV = [
   { label: "Marketplace", href: "/notes" },

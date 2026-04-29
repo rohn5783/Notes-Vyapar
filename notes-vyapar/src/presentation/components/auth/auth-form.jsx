@@ -7,7 +7,7 @@ import { MotionButton } from "@/presentation/components/ui/MotionElements";
 
 import useAuth from "@/presentation/hooks/useAuth";
 
-import styles from "./auth-form.module.scss";
+import styles from "./auth-form.module.css";
 
 const COPY = {
   login: {
