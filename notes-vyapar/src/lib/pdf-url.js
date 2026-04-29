@@ -10,10 +10,24 @@ export function sanitizePdfFilename(value) {
   return `${cleaned || fallback}.pdf`;
 }
 
-export function getNotePdfViewUrl(noteId) {
-  return `/api/notes/${noteId}/pdf`;
-}
+export function getDirectPdfUrl(fileUrl) {
+  if (!fileUrl) {
+    return null;
+  }
 
-export function getNotePdfDownloadUrl(noteId) {
-  return `/api/notes/${noteId}/pdf?download=1`;
+  try {
+    const url = new URL(fileUrl);
+
+    if (url.protocol !== "https:" && url.protocol !== "http:") {
+      return null;
+    }
+
+    if (url.protocol === "http:" && url.hostname.includes("cloudinary.com")) {
+      url.protocol = "https:";
+    }
+
+    return url.toString();
+  } catch {
+    return null;
+  }
 }
