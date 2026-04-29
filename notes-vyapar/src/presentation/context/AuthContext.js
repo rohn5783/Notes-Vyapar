@@ -39,7 +39,7 @@ const parseResponse = async (response) => {
   }
 
   if (!response.ok || result.success === false) {
-    throw new Error(result.message || "Something went wrong");
+    throw new Error(result.message || result.error || "Something went wrong");
   }
 
   return result;
@@ -51,10 +51,14 @@ export function AuthProvider({ children }) {
   const [status, setStatus] = useState("loading");
 
   const fetchProfile = async (authToken) => {
+    const headers = new Headers();
+
+    if (authToken) {
+      headers.set("Authorization", `Bearer ${authToken}`);
+    }
+
     const response = await fetch("/api/user/profile", {
-      headers: {
-        Authorization: `Bearer ${authToken}`
-      },
+      headers,
       cache: "no-store"
     });
 
@@ -65,11 +69,6 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const initializeAuth = async () => {
       const storedToken = readStoredToken();
-
-      if (!storedToken) {
-        setStatus("ready");
-        return;
-      }
 
       try {
         const currentUser = await fetchProfile(storedToken);
@@ -141,7 +140,8 @@ export function AuthProvider({ children }) {
 
     return fetch(input, {
       ...init,
-      headers
+      headers,
+      credentials: "same-origin"
     });
   };
 
@@ -151,7 +151,7 @@ export function AuthProvider({ children }) {
         user,
         token,
         status,
-        isAuthenticated: Boolean(user && token),
+        isAuthenticated: Boolean(user),
         signIn,
         signUp,
         signOut,

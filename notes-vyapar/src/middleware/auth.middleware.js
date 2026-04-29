@@ -1,5 +1,7 @@
 import jwt from "jsonwebtoken";
 
+export const AUTH_COOKIE_NAME = "notes-vyapar-token";
+
 const unauthorizedResponse = (message) =>
   Response.json(
     {
@@ -12,17 +14,18 @@ const unauthorizedResponse = (message) =>
 export function authMiddleware(req) {
   try {
     const authHeader = req.headers.get("authorization");
+    const cookieToken = req.cookies?.get?.(AUTH_COOKIE_NAME)?.value;
 
-    if (!authHeader) {
+    if (!authHeader && !cookieToken) {
       return {
         success: false,
         response: unauthorizedResponse("Authorization token is required")
       };
     }
 
-    const token = authHeader.startsWith("Bearer ")
-      ? authHeader.slice(7).trim()
-      : authHeader.trim();
+    const token = authHeader
+      ? (authHeader.startsWith("Bearer ") ? authHeader.slice(7).trim() : authHeader.trim())
+      : cookieToken;
 
     if (!token) {
       return {

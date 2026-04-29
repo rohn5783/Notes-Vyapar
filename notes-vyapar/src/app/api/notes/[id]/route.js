@@ -6,6 +6,9 @@ import cloudinary from "@/infrastructure/storage/cloudinary";
 import { sanitizePdfFilename } from "@/lib/pdf-url";
 import mongoose from "mongoose";
 
+export const runtime = "nodejs";
+export const maxDuration = 60;
+
 const parseTags = (value) =>
   String(value || "")
     .split(",")
@@ -93,6 +96,10 @@ export async function PUT(req, { params }) {
   try {
     const { id } = await params;
 
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return NextResponse.json({ error: "Note not found" }, { status: 404 });
+    }
+
     const note = await Note.findById(id);
     if (!note) {
       return NextResponse.json({ error: "Note not found" }, { status: 404 });
@@ -133,6 +140,11 @@ export async function PUT(req, { params }) {
 
       const file = formData.get("file");
       if (file && file.size > 0) {
+        if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+          console.error("Note update blocked: Cloudinary environment variables are missing.");
+          return NextResponse.json({ error: "File upload service is not configured" }, { status: 500 });
+        }
+
         if (file.type !== "application/pdf") {
           return NextResponse.json({ error: "Only PDF files are allowed" }, { status: 400 });
         }
@@ -154,6 +166,11 @@ export async function PUT(req, { params }) {
 
       const thumbnail = formData.get("thumbnail");
       if (thumbnail && thumbnail.size > 0) {
+        if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+          console.error("Thumbnail update blocked: Cloudinary environment variables are missing.");
+          return NextResponse.json({ error: "File upload service is not configured" }, { status: 500 });
+        }
+
         if (!thumbnail.type.startsWith("image/")) {
           return NextResponse.json({ error: "Thumbnail must be an image" }, { status: 400 });
         }
@@ -177,7 +194,11 @@ export async function PUT(req, { params }) {
 
     return NextResponse.json({ success: true, note });
   } catch (error) {
-    console.error("Note update error:", error);
+    console.error("Note update error:", {
+      message: error?.message,
+      name: error?.name,
+      stack: error?.stack,
+    });
     return NextResponse.json({ error: "Failed to update note" }, { status: 500 });
   }
 }
@@ -190,6 +211,11 @@ export async function DELETE(req, { params }) {
 
   try {
     const { id } = await params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return NextResponse.json({ error: "Note not found" }, { status: 404 });
+    }
+
     const note = await Note.findById(id);
 
     if (!note) {
@@ -206,7 +232,11 @@ export async function DELETE(req, { params }) {
 
     return NextResponse.json({ success: true, message: "Note deleted successfully" });
   } catch (error) {
-    console.error("Note delete error:", error);
+    console.error("Note delete error:", {
+      message: error?.message,
+      name: error?.name,
+      stack: error?.stack,
+    });
     return NextResponse.json({ error: "Failed to delete note" }, { status: 500 });
   }
 }

@@ -5,6 +5,9 @@ import { authMiddleware } from "@/middleware/auth.middleware";
 import cloudinary from "@/infrastructure/storage/cloudinary";
 import { sanitizePdfFilename } from "@/lib/pdf-url";
 
+export const runtime = "nodejs";
+export const maxDuration = 60;
+
 export async function POST(req) {
   const authResult = authMiddleware(req);
   if (!authResult.success) {
@@ -14,6 +17,11 @@ export async function POST(req) {
   await connectDB();
 
   try {
+    if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+      console.error("Note upload blocked: Cloudinary environment variables are missing.");
+      return NextResponse.json({ error: "File upload service is not configured" }, { status: 500 });
+    }
+
     const formData = await req.formData();
     
     const file = formData.get("file");
@@ -93,7 +101,11 @@ export async function POST(req) {
 
     return NextResponse.json({ success: true, note }, { status: 201 });
   } catch (error) {
-    console.error("Note upload error:", error);
+    console.error("Note upload error:", {
+      message: error?.message,
+      name: error?.name,
+      stack: error?.stack,
+    });
     return NextResponse.json({ error: "Failed to create note" }, { status: 500 });
   }
 }
@@ -135,6 +147,7 @@ export async function GET(req) {
 
     return NextResponse.json({ success: true, notes });
   } catch (error) {
+    console.error("Public notes fetch error:", error);
     return NextResponse.json({ error: "Failed to fetch notes" }, { status: 500 });
   }
 }

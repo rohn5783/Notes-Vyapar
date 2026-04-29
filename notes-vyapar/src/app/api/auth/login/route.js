@@ -1,5 +1,7 @@
 import { loginUser } from "@/application/services/auth.service";
 import connectDB from "@/infrastructure/database/mongodb";
+import { AUTH_COOKIE_NAME } from "@/middleware/auth.middleware";
+import { NextResponse } from "next/server";
 
 const getStatusCode = (message) => {
   switch (message) {
@@ -38,12 +40,22 @@ export async function POST(req) {
     const body = await req.json();
     const { token, user } = await loginUser(body);
 
-    return Response.json({
+    const response = NextResponse.json({
       success: true,
       message: "Login successful",
       token,
       user
     });
+
+    response.cookies.set(AUTH_COOKIE_NAME, token, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7,
+    });
+
+    return response;
   } catch (error) {
     return Response.json(
       {

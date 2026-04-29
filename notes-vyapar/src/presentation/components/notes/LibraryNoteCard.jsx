@@ -19,19 +19,25 @@ const formatDate = (value) => {
 
 export default function LibraryNoteCard({ note }) {
   const router = useRouter();
-  const { user, authFetch, isAuthenticated } = useAuth();
+  const { user, status, authFetch, isAuthenticated } = useAuth();
   const [isDeleted, setIsDeleted] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [message, setMessage] = useState(null);
   const isFree = Number(note.price) === 0;
 
   const isOwner = useMemo(() => {
-    const sellerId = note.seller?._id || note.seller?.id || note.seller;
+    const sellerId = note.sellerId || note.seller?._id || note.seller?.id || note.seller;
     return Boolean(user?.id && sellerId && String(user.id) === String(sellerId));
-  }, [note.seller, user?.id]);
+  }, [note.seller, note.sellerId, user?.id]);
+  const isAuthLoading = status === "loading";
 
   const handleDelete = async () => {
     setMessage(null);
+
+    if (isAuthLoading) {
+      setMessage({ type: "error", text: "Checking your login. Please try again in a moment." });
+      return;
+    }
 
     if (!isAuthenticated) {
       setMessage({ type: "error", text: "Please login to delete this note." });
@@ -119,9 +125,15 @@ export default function LibraryNoteCard({ note }) {
         </Link>
         <Link
           href={`/library/edit/${note._id}`}
-          className={`libraryActionEdit ${!isOwner ? "libraryActionDisabled" : ""}`}
-          aria-disabled={!isOwner}
+          className={`libraryActionEdit ${!isAuthLoading && !isOwner ? "libraryActionDisabled" : ""}`}
+          aria-disabled={!isAuthLoading && !isOwner}
           onClick={(event) => {
+            if (isAuthLoading) {
+              event.preventDefault();
+              setMessage({ type: "error", text: "Checking your login. Please try again in a moment." });
+              return;
+            }
+
             if (!isOwner) {
               event.preventDefault();
               setMessage({ type: "error", text: "You can edit only your own notes." });

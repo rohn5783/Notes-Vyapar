@@ -6,6 +6,7 @@ import mongoose from "mongoose";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+export const maxDuration = 60;
 
 const contentDisposition = (mode, filename) => {
   const safeFilename = filename.replace(/"/g, "");
@@ -33,6 +34,11 @@ export async function GET(req, { params }) {
     });
 
     if (!sourceResponse.ok || !sourceResponse.body) {
+      console.error("PDF source fetch failed:", {
+        noteId: id,
+        status: sourceResponse.status,
+        statusText: sourceResponse.statusText,
+      });
       return NextResponse.json({ error: "PDF file unavailable" }, { status: 502 });
     }
 
@@ -50,7 +56,12 @@ export async function GET(req, { params }) {
       },
     });
   } catch (error) {
-    console.error("PDF proxy error:", error);
+    console.error("PDF proxy error:", {
+      noteId: id,
+      message: error?.message,
+      name: error?.name,
+      stack: error?.stack,
+    });
     return NextResponse.json({ error: "PDF file unavailable" }, { status: 500 });
   }
 }

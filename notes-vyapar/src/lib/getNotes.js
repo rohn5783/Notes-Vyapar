@@ -5,6 +5,16 @@ import Note from "../domain/entities/Note";
 import User from "../domain/entities/User"; 
 import mongoose from "mongoose";
 
+const serializeNote = (note) => {
+  const serialized = JSON.parse(JSON.stringify(note));
+  const seller = serialized.seller;
+
+  return {
+    ...serialized,
+    sellerId: seller?._id || seller?.id || (typeof seller === "string" ? seller : null),
+  };
+};
+
 export async function getNotes(searchParams) {
   try {
     await connectDB();
@@ -40,8 +50,7 @@ export async function getNotes(searchParams) {
       .sort(sortObj)
       .lean();
       
-    // Serialize object to pass from Server Component to Client Component easily
-    return JSON.parse(JSON.stringify(notes));
+    return notes.map(serializeNote);
   } catch (error) {
     console.error("Error fetching notes:", error);
     return [];
@@ -60,7 +69,7 @@ export async function getNoteById(id) {
       .populate("seller", "name")
       .lean();
 
-    return note ? JSON.parse(JSON.stringify(note)) : null;
+    return note ? serializeNote(note) : null;
   } catch (error) {
     console.error("Error fetching note:", error);
     return null;
