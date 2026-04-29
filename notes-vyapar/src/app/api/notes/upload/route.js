@@ -2,7 +2,7 @@
 import { NextResponse } from "next/server";
 import cloudinary from "@/infrastructure/storage/cloudinary";
 import Note from "@/domain/entities/Note";
-import connectDB from "@/lib/db";
+import connectDB from "@/infrastructure/database/mongodb";
 
 export async function POST(req) {
   await connectDB();
@@ -14,16 +14,19 @@ export async function POST(req) {
   const subject = formData.get("subject");
   const price = Number(formData.get("price"));
 
-  if (!file) {
-    return NextResponse.json({ error: "No file" }, { status: 400 });
+  // ✅ YAHI LIKHNA HAI
+  if (!file || file.type !== "application/pdf") {
+    return NextResponse.json(
+      { error: "Only PDF allowed" },
+      { status: 400 }
+    );
   }
-
 
   const bytes = await file.arrayBuffer();
   const buffer = Buffer.from(bytes);
 
   // upload to cloudinary
-  const uploadRes = await new Promise<any>((resolve, reject) => {
+  const uploadRes = await new Promise((resolve, reject) => {
     cloudinary.uploader.upload_stream(
       { resource_type: "raw" }, // PDF ke liye
       (error, result) => {
@@ -41,24 +44,5 @@ export async function POST(req) {
     fileUrl: uploadRes.secure_url,
   });
 
-  return NextResponse.json({ note });
-}
-export async function POST(req) {
-  const formData = await req.formData();
-
-  const file = formData.get("file");
-
-  // ✅ YAHI LIKHNA HAI
-  if (!file || file.type !== "application/pdf") {
-    return NextResponse.json(
-      { error: "Only PDF allowed" },
-      { status: 400 }
-    );
-  }
-
-  // Cloudinary upload
-  // DB save
-  // response
-
-  return NextResponse.json({ message: "Uploaded successfully" });
+  return NextResponse.json({ note, message: "Uploaded successfully" });
 }
