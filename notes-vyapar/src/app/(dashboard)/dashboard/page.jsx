@@ -12,8 +12,8 @@ import styles from "./page.module.css";
 
 const PRIMARY_NAV = [
   { label: "Marketplace", href: "/notes" },
-  { label: "Upload", href: "/my-notes" },
-  { label: "Library", href: "/purchases" }
+  { label: "Upload", href: "/upload" },
+  { label: "Library", href: "/library" }
 ];
 
 const SIDEBAR_LINKS = [
@@ -283,7 +283,7 @@ export default function DashboardPage() {
 
           <div className={styles.mobileMenuActions}>
             <MotionLink
-              href="/my-notes"
+              href="/upload"
               className={styles.primarySidebarButton}
               onClick={() => setIsMobileMenuOpen(false)}
             >
@@ -330,7 +330,7 @@ export default function DashboardPage() {
             <div>
               <h2>Recent Artifact Activity</h2>
             </div>
-            <Link href="/notes">View All Records</Link>
+            <Link href="/library">View All Records</Link>
           </div>
 
           <div className={styles.activityTable}>
@@ -376,7 +376,7 @@ export default function DashboardPage() {
         </footer>
       </section>
 
-      <MotionLink href="/my-notes" className={styles.floatingUploadButton} aria-label="Upload new note">
+      <MotionLink href="/upload" className={styles.floatingUploadButton} aria-label="Upload new note">
         <DashboardIcon type="plus" />
       </MotionLink>
     </main>

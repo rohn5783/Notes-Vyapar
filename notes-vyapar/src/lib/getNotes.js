@@ -3,6 +3,7 @@ import connectDB from "../infrastructure/database/mongodb";
 import Note from "../domain/entities/Note";
 // eslint-disable-next-line no-unused-vars
 import User from "../domain/entities/User"; 
+import mongoose from "mongoose";
 
 export async function getNotes(searchParams) {
   try {
@@ -44,5 +45,24 @@ export async function getNotes(searchParams) {
   } catch (error) {
     console.error("Error fetching notes:", error);
     return [];
+  }
+}
+
+export async function getNoteById(id) {
+  try {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return null;
+    }
+
+    await connectDB();
+
+    const note = await Note.findById(id)
+      .populate("seller", "name")
+      .lean();
+
+    return note ? JSON.parse(JSON.stringify(note)) : null;
+  } catch (error) {
+    console.error("Error fetching note:", error);
+    return null;
   }
 }

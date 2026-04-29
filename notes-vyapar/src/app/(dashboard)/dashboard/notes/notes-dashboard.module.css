@@ -1,0 +1,197 @@
+.pageShell {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-base);
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.statCard {
+  background: var(--toggle-bg);
+  padding: 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.statValue {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-top: 0.5rem;
+}
+
+.layoutGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+@media (min-width: 968px) {
+  .layoutGrid {
+    grid-template-columns: 400px 1fr;
+  }
+}
+
+.formContainer {
+  background: var(--bg-base);
+  border: 1px solid var(--toggle-bg-hover);
+  padding: 1.5rem;
+  border-radius: 1rem;
+  height: fit-content;
+}
+
+.listContainer {
+  background: transparent;
+}
+
+.formGroup {
+  margin-bottom: 1.2rem;
+}
+
+.formGroup label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.formInput {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--toggle-bg-hover);
+  background: var(--bg-base);
+  color: var(--text-base);
+}
+
+.btnPrimary {
+  background: #4f46e5;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  width: 100%;
+  transition: all 0.2s;
+}
+
+.btnPrimary:hover {
+  background: #4338ca;
+}
+
+.btnSecondary {
+  background: transparent;
+  color: var(--text-base);
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--toggle-bg-hover);
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.gridCards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.noteCard {
+  background: var(--toggle-bg);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.noteTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.noteMeta {
+  font-size: 0.85rem;
+  color: #888;
+  margin-bottom: 1rem;
+}
+
+.badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: inline-block;
+  margin-bottom: 1rem;
+}
+
+.badgeFree {
+  background: #10b981;
+  color: white;
+}
+
+.badgePaid {
+  background: #f59e0b;
+  color: white;
+}
+
+.cardActions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: auto;
+  padding-top: 1rem;
+}
+
+.btnEdit, .btnDelete {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  border: none;
+  flex: 1;
+}
+
+.btnEdit {
+  background: #3b82f6;
+  color: white;
+}
+
+.btnDelete {
+  background: #ef4444;
+  color: white;
+}
+
+.spinner {
+  border: 4px solid rgba(255,255,255,0.1);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border-left-color: #fff;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

@@ -1,5 +1,6 @@
 @import "../styles/base/_reset.css";
 @import "../styles/base/_typography.css";
+@import "../styles/pages/_notes-marketplace.css";
 
 :root {
   color-scheme: dark;
