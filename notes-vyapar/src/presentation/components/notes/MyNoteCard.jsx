@@ -1,11 +1,9 @@
 "use client";
 
-import { getDirectPdfUrl } from "@/lib/pdf-url";
 import styles from "../../../app/(dashboard)/dashboard/notes/notes-dashboard.module.css";
 
 export default function MyNoteCard({ note, onEdit, onDelete }) {
   const isFree = Number(note.price) === 0;
-  const pdfUrl = getDirectPdfUrl(note.fileUrl);
 
   return (
     <div className={styles.noteCard}>
@@ -30,21 +28,6 @@ export default function MyNoteCard({ note, onEdit, onDelete }) {
       </p>
 
       <div className={styles.cardActions}>
-        <a
-          href={pdfUrl || "#"}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={styles.btnSecondary}
-          style={{ padding: "0.5rem", textAlign: "center", textDecoration: "none", flex: 1, fontSize: "0.85rem" }}
-          onClick={(event) => {
-            if (!pdfUrl) {
-              event.preventDefault();
-              alert("PDF file unavailable");
-            }
-          }}
-        >
-          View PDF
-        </a>
         <button onClick={() => onEdit(note)} className={styles.btnEdit}>
           Edit
         </button>

@@ -2,8 +2,11 @@ import { NextResponse } from "next/server";
 import connectDB from "@/infrastructure/database/mongodb";
 import Note from "@/domain/entities/Note";
 import { authMiddleware } from "@/middleware/auth.middleware";
-import cloudinary from "@/infrastructure/storage/cloudinary";
-import { sanitizePdfFilename } from "@/lib/pdf-url";
+import {
+  PdfUploadError,
+  uploadImageToCloudinary,
+  uploadPdfToCloudinary,
+} from "@/infrastructure/storage/cloudinary-pdf";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -17,11 +20,6 @@ export async function POST(req) {
   await connectDB();
 
   try {
-    if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
-      console.error("Note upload blocked: Cloudinary environment variables are missing.");
-      return NextResponse.json({ error: "File upload service is not configured" }, { status: 500 });
-    }
-
     const formData = await req.formData();
     
     const file = formData.get("file");
@@ -41,47 +39,21 @@ export async function POST(req) {
       return NextResponse.json({ error: "Missing required fields or invalid price" }, { status: 400 });
     }
 
-    if (!file || file.type !== "application/pdf") {
+    if (!file || file.size === 0) {
       return NextResponse.json({ error: "PDF file is required" }, { status: 400 });
     }
 
-    // Upload PDF to Cloudinary
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    const pdfFilename = sanitizePdfFilename(file.name || title);
-    const pdfPublicId = `${pdfFilename.replace(/\.pdf$/i, "")}-${Date.now()}.pdf`;
-    const uploadRes = await new Promise((resolve, reject) => {
-      cloudinary.uploader.upload_stream(
-        {
-          resource_type: "raw",
-          folder: "notes_pdfs",
-          public_id: pdfPublicId,
-          unique_filename: false,
-          use_filename: false,
-          filename_override: pdfFilename,
-        },
-        (error, result) => {
-          if (error) reject(error);
-          else resolve(result);
-        }
-      ).end(buffer);
-    });
+    const thumbnail = formData.get("thumbnail");
+    if (thumbnail && thumbnail.size > 0 && !thumbnail.type.startsWith("image/")) {
+      return NextResponse.json({ error: "Thumbnail must be an image" }, { status: 400 });
+    }
+
+    const uploadRes = await uploadPdfToCloudinary(file, title);
 
     let thumbnailUrl = null;
-    const thumbnail = formData.get("thumbnail");
-    if (thumbnail && thumbnail.type.startsWith("image/")) {
-      const thumbBytes = await thumbnail.arrayBuffer();
-      const thumbBuffer = Buffer.from(thumbBytes);
-      const thumbRes = await new Promise((resolve, reject) => {
-        cloudinary.uploader.upload_stream(
-          { folder: "notes_thumbnails" },
-          (error, result) => {
-            if (error) reject(error);
-            else resolve(result);
-          }
-        ).end(thumbBuffer);
-      });
-      thumbnailUrl = thumbRes.secure_url;
+    if (thumbnail && thumbnail.size > 0) {
+      const thumbRes = await uploadImageToCloudinary(thumbnail);
+      thumbnailUrl = thumbRes?.secure_url || null;
     }
 
     const note = await Note.create({
@@ -91,7 +63,7 @@ export async function POST(req) {
       price,
       category,
       tags,
-      fileUrl: uploadRes.secure_url,
+      fileUrl: uploadRes.fileUrl,
       thumbnailUrl,
       isPremium,
       language,
@@ -101,6 +73,11 @@ export async function POST(req) {
 
     return NextResponse.json({ success: true, note }, { status: 201 });
   } catch (error) {
+    if (error instanceof PdfUploadError) {
+      console.error("Note upload validation error:", error.message);
+      return NextResponse.json({ error: error.message }, { status: error.status });
+    }
+
     console.error("Note upload error:", {
       message: error?.message,
       name: error?.name,

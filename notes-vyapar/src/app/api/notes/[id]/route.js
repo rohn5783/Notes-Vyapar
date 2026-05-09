@@ -2,8 +2,12 @@ import { NextResponse } from "next/server";
 import connectDB from "@/infrastructure/database/mongodb";
 import Note from "@/domain/entities/Note";
 import { authMiddleware } from "@/middleware/auth.middleware";
-import cloudinary from "@/infrastructure/storage/cloudinary";
-import { sanitizePdfFilename } from "@/lib/pdf-url";
+import {
+  deleteCloudinaryAsset,
+  PdfUploadError,
+  uploadImageToCloudinary,
+  uploadPdfToCloudinary,
+} from "@/infrastructure/storage/cloudinary-pdf";
 import mongoose from "mongoose";
 
 export const runtime = "nodejs";
@@ -14,55 +18,6 @@ const parseTags = (value) =>
     .split(",")
     .map((tag) => tag.trim())
     .filter(Boolean);
-
-const uploadBufferToCloudinary = (buffer, options) =>
-  new Promise((resolve, reject) => {
-    cloudinary.uploader.upload_stream(options, (error, result) => {
-      if (error) {
-        reject(error);
-        return;
-      }
-
-      resolve(result);
-    }).end(buffer);
-  });
-
-const uploadFile = async (file, options) => {
-  const bytes = await file.arrayBuffer();
-  return uploadBufferToCloudinary(Buffer.from(bytes), options);
-};
-
-const extractCloudinaryPublicId = (url, resourceFolder) => {
-  try {
-    const parsedUrl = new URL(url);
-    const marker = `/${resourceFolder}/upload/`;
-    const markerIndex = parsedUrl.pathname.indexOf(marker);
-
-    if (markerIndex === -1) {
-      return null;
-    }
-
-    const afterUpload = parsedUrl.pathname.slice(markerIndex + marker.length);
-    const withoutVersion = afterUpload.replace(/^v\d+\//, "");
-    return decodeURIComponent(withoutVersion);
-  } catch {
-    return null;
-  }
-};
-
-const deleteCloudinaryAsset = async (url, resourceType) => {
-  const publicId = extractCloudinaryPublicId(url, resourceType);
-
-  if (!publicId) {
-    return;
-  }
-
-  try {
-    await cloudinary.uploader.destroy(publicId, { resource_type: resourceType });
-  } catch (error) {
-    console.warn("Cloudinary cleanup failed:", error?.message || error);
-  }
-};
 
 export async function GET(req, { params }) {
   const { id } = await params;
@@ -92,6 +47,11 @@ export async function PUT(req, { params }) {
   if (!authResult.success) return authResult.response;
 
   await connectDB();
+
+  let uploadedReplacementFileUrl = null;
+  let uploadedReplacementThumbnailUrl = null;
+  let previousFileUrl = null;
+  let previousThumbnailUrl = null;
 
   try {
     const { id } = await params;
@@ -137,47 +97,21 @@ export async function PUT(req, { params }) {
       note.language = language;
       note.university = university;
       note.isPremium = isPremium;
+      previousFileUrl = note.fileUrl;
+      previousThumbnailUrl = note.thumbnailUrl;
 
       const file = formData.get("file");
       if (file && file.size > 0) {
-        if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
-          console.error("Note update blocked: Cloudinary environment variables are missing.");
-          return NextResponse.json({ error: "File upload service is not configured" }, { status: 500 });
-        }
-
-        if (file.type !== "application/pdf") {
-          return NextResponse.json({ error: "Only PDF files are allowed" }, { status: 400 });
-        }
-
-        const pdfFilename = sanitizePdfFilename(file.name || title);
-        const pdfPublicId = `${pdfFilename.replace(/\.pdf$/i, "")}-${Date.now()}.pdf`;
-        const uploadRes = await uploadFile(file, {
-          resource_type: "raw",
-          folder: "notes_pdfs",
-          public_id: pdfPublicId,
-          unique_filename: false,
-          use_filename: false,
-          filename_override: pdfFilename,
-        });
-
-        await deleteCloudinaryAsset(note.fileUrl, "raw");
-        note.fileUrl = uploadRes.secure_url;
+        const uploadRes = await uploadPdfToCloudinary(file, title);
+        uploadedReplacementFileUrl = uploadRes.fileUrl;
+        note.fileUrl = uploadRes.fileUrl;
       }
 
       const thumbnail = formData.get("thumbnail");
       if (thumbnail && thumbnail.size > 0) {
-        if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
-          console.error("Thumbnail update blocked: Cloudinary environment variables are missing.");
-          return NextResponse.json({ error: "File upload service is not configured" }, { status: 500 });
-        }
-
-        if (!thumbnail.type.startsWith("image/")) {
-          return NextResponse.json({ error: "Thumbnail must be an image" }, { status: 400 });
-        }
-
-        const thumbRes = await uploadFile(thumbnail, { folder: "notes_thumbnails" });
-        await deleteCloudinaryAsset(note.thumbnailUrl, "image");
-        note.thumbnailUrl = thumbRes.secure_url;
+        const thumbRes = await uploadImageToCloudinary(thumbnail);
+        uploadedReplacementThumbnailUrl = thumbRes?.secure_url || null;
+        note.thumbnailUrl = uploadedReplacementThumbnailUrl;
       }
     } else {
       const body = await req.json();
@@ -192,8 +126,29 @@ export async function PUT(req, { params }) {
 
     await note.save();
 
+    if (uploadedReplacementFileUrl && previousFileUrl) {
+      await deleteCloudinaryAsset(previousFileUrl, "raw");
+    }
+
+    if (uploadedReplacementThumbnailUrl && previousThumbnailUrl) {
+      await deleteCloudinaryAsset(previousThumbnailUrl, "image");
+    }
+
     return NextResponse.json({ success: true, note });
   } catch (error) {
+    if (uploadedReplacementFileUrl) {
+      await deleteCloudinaryAsset(uploadedReplacementFileUrl, "raw");
+    }
+
+    if (uploadedReplacementThumbnailUrl) {
+      await deleteCloudinaryAsset(uploadedReplacementThumbnailUrl, "image");
+    }
+
+    if (error instanceof PdfUploadError) {
+      console.error("Note update validation error:", error.message);
+      return NextResponse.json({ error: error.message }, { status: error.status });
+    }
+
     console.error("Note update error:", {
       message: error?.message,
       name: error?.name,

@@ -295,6 +295,15 @@
   border-radius: 0.8rem;
 }
 
+.libraryPreviewLink,
+.libraryTitleLink {
+  display: block;
+}
+
+.libraryTitleLink:hover {
+  color: var(--notes-accent);
+}
+
 .libraryThumb img {
   width: 100%;
   height: 100%;
@@ -389,6 +398,7 @@
 }
 
 .libraryActionView,
+.libraryActionDownload,
 .libraryActionEdit,
 .libraryActionDelete {
   display: inline-flex;
@@ -410,6 +420,12 @@
   border-color: #2563eb;
 }
 
+.libraryActionDownload {
+  color: #fff;
+  background: #2563eb;
+  border-color: #2563eb;
+}
+
 .libraryActionEdit {
   color: #78350f;
   background: #fef3c7;
@@ -423,12 +439,14 @@
 }
 
 .libraryActionView:hover,
+.libraryActionDownload:hover,
 .libraryActionEdit:hover,
 .libraryActionDelete:hover {
   transform: translateY(-1px);
 }
 
-.libraryActionView:hover {
+.libraryActionView:hover,
+.libraryActionDownload:hover {
   background: #1d4ed8;
 }
 

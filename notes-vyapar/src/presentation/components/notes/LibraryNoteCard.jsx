@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
+import { getDirectPdfUrl, getPdfDownloadUrl, sanitizePdfFilename } from "@/lib/pdf-url";
 import useAuth from "@/presentation/hooks/useAuth";
 
 const formatDate = (value) => {
@@ -24,6 +25,9 @@ export default function LibraryNoteCard({ note }) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [message, setMessage] = useState(null);
   const isFree = Number(note.price) === 0;
+  const pdfUrl = getDirectPdfUrl(note.fileUrl);
+  const pdfFilename = sanitizePdfFilename(note.title);
+  const downloadUrl = getPdfDownloadUrl(note.fileUrl, pdfFilename);
 
   const isOwner = useMemo(() => {
     const sellerId = note.sellerId || note.seller?._id || note.seller?.id || note.seller;
@@ -83,9 +87,11 @@ export default function LibraryNoteCard({ note }) {
   return (
     <article className="libraryCard">
       {note.thumbnailUrl && (
-        <div className="libraryThumb">
-          <img src={note.thumbnailUrl} alt={`${note.title} thumbnail`} />
-        </div>
+        <Link href={`/library/${note._id}`} className="libraryPreviewLink" aria-label={`Preview ${note.title}`}>
+          <div className="libraryThumb">
+            <img src={note.thumbnailUrl} alt={`${note.title} thumbnail`} />
+          </div>
+        </Link>
       )}
 
       <div className="libraryCardTop">
@@ -95,7 +101,11 @@ export default function LibraryNoteCard({ note }) {
         </span>
       </div>
 
-      <h2 className="libraryCardTitle lineClamp2">{note.title}</h2>
+      <h2 className="libraryCardTitle lineClamp2">
+        <Link href={`/library/${note._id}`} className="libraryTitleLink">
+          {note.title}
+        </Link>
+      </h2>
       <p className="libraryCardDescription lineClamp3">{note.description}</p>
 
       <div className="libraryMeta">
@@ -120,9 +130,25 @@ export default function LibraryNoteCard({ note }) {
       )}
 
       <div className="libraryActions">
-        <Link href={`/library/${note._id}`} className="libraryActionView">
-          View Notes
-        </Link>
+        {downloadUrl ? (
+          <a
+            href={downloadUrl || pdfUrl}
+            download={pdfFilename}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="libraryActionDownload"
+          >
+            Download Notes
+          </a>
+        ) : (
+          <button
+            type="button"
+            className="libraryActionDownload libraryActionDisabled"
+            onClick={() => setMessage({ type: "error", text: "Notes file unavailable for download." })}
+          >
+            Download Notes
+          </button>
+        )}
         <Link
           href={`/library/edit/${note._id}`}
           className={`libraryActionEdit ${!isAuthLoading && !isOwner ? "libraryActionDisabled" : ""}`}

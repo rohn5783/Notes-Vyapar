@@ -33,8 +33,8 @@ export default async function EditLibraryNotePage({ params }) {
               Replace files or adjust metadata for this listing.
             </p>
           </div>
-          <Link href={`/library/${note._id}`} className="notesButtonSecondary">
-            View Notes
+          <Link href="/library" className="notesButtonSecondary">
+            Back to Library
           </Link>
         </div>
 

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getNoteById } from "@/lib/getNotes";
-import { getDirectPdfUrl, sanitizePdfFilename } from "@/lib/pdf-url";
+import { getDirectPdfUrl, getPdfDownloadUrl, getPdfPreviewImageUrl, sanitizePdfFilename } from "@/lib/pdf-url";
 
 export const dynamic = "force-dynamic";
 
@@ -16,6 +16,8 @@ const formatDate = (value) => {
     year: "numeric"
   }).format(new Date(value));
 };
+
+
 
 export async function generateMetadata({ params }) {
   const { id } = await params;
@@ -45,6 +47,9 @@ export default async function LibraryNotePage({ params }) {
   const tags = Array.isArray(note.tags) ? note.tags.filter(Boolean) : [];
   const pdfUrl = getDirectPdfUrl(note.fileUrl);
   const pdfFilename = sanitizePdfFilename(note.title);
+  const downloadUrl = getPdfDownloadUrl(note.fileUrl, pdfFilename);
+  const previewImageUrl = getPdfPreviewImageUrl(note.fileUrl);
+  const canUsePdf = Boolean(pdfUrl);
 
   return (
     <main className="notesPage">
@@ -67,40 +72,23 @@ export default async function LibraryNotePage({ params }) {
           <div className="pdfPanel">
             <div className="pdfPanelHeader">
               <div>
-                <h2>PDF Preview</h2>
-                <p>{pdfUrl ? "Scroll inside the viewer to read the note." : "PDF file unavailable"}</p>
+                <h2>Notes Preview</h2>
+                <p>{canUsePdf ? "Showing Page 1 Preview. Download to read the full notes." : "Notes preview unavailable"}</p>
               </div>
-              {pdfUrl && (
-                <a href={pdfUrl} target="_blank" rel="noopener noreferrer" className="notesButtonSecondary">
-                  Open in New Tab
-                </a>
-              )}
             </div>
 
-            {pdfUrl ? (
-              <object
-                data={pdfUrl}
-                type="application/pdf"
-                className="pdfFrame"
-                aria-label={`${note.title} PDF preview`}
-              >
-                <iframe
-                  src={pdfUrl}
-                  title={`${note.title} PDF preview`}
-                  className="pdfFrame"
+            {canUsePdf && previewImageUrl ? (
+              <div className="pdfFrame rounded-xl border flex flex-col items-center justify-center overflow-hidden bg-gray-100 min-h-[500px]">
+                <img 
+                  src={previewImageUrl} 
+                  alt={`${note.title} - Page 1 Preview`} 
+                  className="w-full h-auto object-contain max-h-[800px]"
                 />
-                <div className="pdfMissing">
-                  <h2>PDF file unavailable</h2>
-                  <p>Your browser could not render this PDF inline. Open it in a new tab instead.</p>
-                  <a href={pdfUrl} target="_blank" rel="noopener noreferrer" className="notesButton">
-                    Open PDF
-                  </a>
-                </div>
-              </object>
+              </div>
             ) : (
               <div className="pdfMissing">
-                <h2>PDF file unavailable</h2>
-                <p>This note does not have a valid uploaded PDF URL attached.</p>
+                <h2>Notes preview unavailable</h2>
+                <p>This note does not have a valid preview available.</p>
               </div>
             )}
           </div>
@@ -163,15 +151,16 @@ export default async function LibraryNotePage({ params }) {
             )}
 
             <div className="noteActions">
-              {pdfUrl && (
-                <>
-                  <a href={pdfUrl} target="_blank" rel="noopener noreferrer" className="notesButton">
-                    View PDF
-                  </a>
-                  <a href={pdfUrl} download={pdfFilename} className="notesButtonSecondary">
-                    Download PDF
-                  </a>
-                </>
+              {canUsePdf && (
+                <a
+                  href={downloadUrl || pdfUrl}
+                  download={pdfFilename}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="notesButton"
+                >
+                  Download Notes
+                </a>
               )}
               <Link href="/library" className="notesButtonSecondary">
                 Back to Library

@@ -1,8 +1,12 @@
 // src/presentation/components/notes/NoteCard.jsx
 import Link from "next/link";
+import { getDirectPdfUrl, getPdfDownloadUrl, sanitizePdfFilename } from "@/lib/pdf-url";
 
 export default function NoteCard({ note }) {
   const isFree = Number(note.price) === 0;
+  const pdfUrl = getDirectPdfUrl(note.fileUrl);
+  const pdfFilename = sanitizePdfFilename(note.title);
+  const downloadUrl = getPdfDownloadUrl(note.fileUrl, pdfFilename);
 
   return (
     <div className="bg-white dark:bg-[#1a2333] rounded-xl shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 overflow-hidden flex flex-col h-full border border-gray-100 dark:border-gray-800">
@@ -17,7 +21,9 @@ export default function NoteCard({ note }) {
         </div>
 
         <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 line-clamp-2 leading-snug">
-          {note.title}
+          <Link href={`/library/${note._id}`} className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+            {note.title}
+          </Link>
         </h3>
 
         <p className="line-clamp-3 text-sm leading-6 text-gray-600 dark:text-gray-400">
@@ -40,12 +46,21 @@ export default function NoteCard({ note }) {
             </span>
           </div>
 
-          <Link
-            href={`/library/${note._id}`}
-            className="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-lg transition-colors shadow-sm hover:shadow"
-          >
-            View Notes
-          </Link>
+          {downloadUrl ? (
+            <a
+              href={downloadUrl || pdfUrl}
+              download={pdfFilename}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-lg transition-colors shadow-sm hover:shadow"
+            >
+              Download Notes
+            </a>
+          ) : (
+            <span className="block w-full text-center bg-gray-300 text-gray-600 dark:bg-gray-800 dark:text-gray-400 font-medium py-2.5 rounded-lg">
+              Notes unavailable
+            </span>
+          )}
         </div>
       </div>
     </div>
