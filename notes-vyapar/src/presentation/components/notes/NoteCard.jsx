@@ -1,68 +1,101 @@
 // src/presentation/components/notes/NoteCard.jsx
+"use client";
+
 import Link from "next/link";
-import { getDirectPdfUrl, getPdfDownloadUrl, sanitizePdfFilename } from "@/lib/pdf-url";
+import { useState } from "react";
+import useAuth from "@/presentation/hooks/useAuth";
 
 export default function NoteCard({ note }) {
+  const { authFetch } = useAuth();
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const isFree = Number(note.price) === 0;
-  const pdfUrl = getDirectPdfUrl(note.fileUrl);
-  const pdfFilename = sanitizePdfFilename(note.title);
-  const downloadUrl = getPdfDownloadUrl(note.fileUrl, pdfFilename);
+  const isOwner = note.isOwner;
+  const hasPurchased = note.hasPurchased;
+
+  const handleDelete = async () => {
+    if (!confirm("Are you sure you want to delete this note?")) return;
+
+    setIsDeleting(true);
+    try {
+      const response = await authFetch(`/api/notes/${note._id}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        window.location.reload();
+      } else {
+        alert("Failed to delete note");
+      }
+    } catch (error) {
+      alert("Error deleting note");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   return (
-    <div className="bg-white dark:bg-[#1a2333] rounded-xl shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 overflow-hidden flex flex-col h-full border border-gray-100 dark:border-gray-800">
-      <div className="p-6 flex-grow flex flex-col">
-        <div className="flex justify-between items-start mb-4">
-          <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 border border-blue-100 dark:border-blue-800/50">
-            {note.subject}
-          </span>
-          <span className={`font-bold text-lg ${isFree ? "text-green-600 dark:text-green-400" : "text-gray-900 dark:text-white"}`}>
-            {isFree ? "Free" : `Rs. ${note.price}`}
-          </span>
-        </div>
+    <article className="notes-card">
+      <div className="notes-card__thumb">
+        {note.thumbnailUrl ? (
+          <img src={note.thumbnailUrl} alt={`${note.title} thumbnail`} className="notes-card__image" />
+        ) : (
+          <div className="notes-card__empty-thumb">
+            <svg className="notes-card__empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+        )}
+        <span className={`notes-card__badge ${isFree ? "notes-card__badge--free" : "notes-card__badge--paid"}`}>
+          {isFree ? "Free" : "Paid"}
+        </span>
+      </div>
 
-        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 line-clamp-2 leading-snug">
-          <Link href={`/library/${note._id}`} className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+      <div className="notes-card__body">
+        <span className="notes-card__tag">{note.subject || note.category || "General"}</span>
+
+        <h3 className="notes-card__title">
+          <Link href={`/library/${note._id}`} className="notes-card__link">
             {note.title}
           </Link>
         </h3>
 
-        <p className="line-clamp-3 text-sm leading-6 text-gray-600 dark:text-gray-400">
-          {note.description}
-        </p>
+        <p className="notes-card__description">{note.description}</p>
 
-        <div className="mt-auto pt-5 border-t border-gray-100 dark:border-gray-800">
-          <div className="flex justify-between items-center text-sm text-gray-500 dark:text-gray-400 mb-5">
-            <span className="flex items-center">
-              <svg className="w-4 h-4 mr-1.5 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
-              {note.seller?.name || "Anonymous"}
-            </span>
-            <span className="flex items-center">
-              <svg className="w-4 h-4 mr-1.5 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-              {new Date(note.createdAt).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}
-            </span>
-          </div>
+        <div className="notes-card__meta-row">
+          <span className="notes-card__price">{isFree ? "Free" : `₹${note.price}`}</span>
+          <span className="notes-card__date">{new Date(note.createdAt).toLocaleDateString()}</span>
+        </div>
 
-          {downloadUrl ? (
-            <a
-              href={downloadUrl || pdfUrl}
-              download={pdfFilename}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-lg transition-colors shadow-sm hover:shadow"
-            >
-              Download Notes
+        <p className="notes-card__author">By {note.seller?.name || "Anonymous"}</p>
+
+        <div className="notes-card__actions">
+          {isOwner ? (
+            <>
+              <Link href={`/notes/edit/${note._id}`} className="notes-button notes-button--secondary notes-button--full">
+                Edit
+              </Link>
+              <button
+                type="button"
+                onClick={handleDelete}
+                disabled={isDeleting}
+                className="notes-button notes-button--danger notes-button--full"
+              >
+                {isDeleting ? "Deleting..." : "Delete"}
+              </button>
+            </>
+          ) : isFree || hasPurchased ? (
+            <a href={`/api/pdf/download/${encodeURIComponent(note._id)}`} className="notes-button notes-button--success notes-button--full">
+              Download Now
             </a>
           ) : (
-            <span className="block w-full text-center bg-gray-300 text-gray-600 dark:bg-gray-800 dark:text-gray-400 font-medium py-2.5 rounded-lg">
-              Notes unavailable
-            </span>
+            <Link href={`/library/${note._id}`} className="notes-button notes-button--primary notes-button--full">
+              Buy Now
+            </Link>
           )}
         </div>
       </div>
-    </div>
+    </article>
   );
 }
+

@@ -33,7 +33,9 @@ export default function LibraryNoteCard({ note }) {
     const sellerId = note.sellerId || note.seller?._id || note.seller?.id || note.seller;
     return Boolean(user?.id && sellerId && String(user.id) === String(sellerId));
   }, [note.seller, note.sellerId, user?.id]);
+  const hasPurchased = Boolean(note.hasPurchased);
   const isAuthLoading = status === "loading";
+  const canDownload = Number(note.price) === 0 || isOwner || hasPurchased;
 
   const handleDelete = async () => {
     setMessage(null);
@@ -130,12 +132,22 @@ export default function LibraryNoteCard({ note }) {
       )}
 
       <div className="libraryActions">
-        {downloadUrl ? (
+        {Number(note.price) > 0 ? (
+          canDownload ? (
+            <a
+              href={`/api/pdf/download/${encodeURIComponent(note._id)}`}
+              className="libraryActionDownload"
+            >
+              Download Notes
+            </a>
+          ) : (
+            <Link href={`/library/${note._id}`} className="libraryActionDownload">
+              View and Purchase
+            </Link>
+          )
+        ) : downloadUrl ? (
           <a
-            href={downloadUrl || pdfUrl}
-            download={pdfFilename}
-            target="_blank"
-            rel="noopener noreferrer"
+            href={`/api/pdf/download/${encodeURIComponent(note._id)}`}
             className="libraryActionDownload"
           >
             Download Notes

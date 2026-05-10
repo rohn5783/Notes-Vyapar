@@ -6,6 +6,7 @@ import {
   PdfUploadError,
   uploadImageToCloudinary,
   uploadPdfToCloudinary,
+  deleteCloudinaryAsset,
 } from "@/infrastructure/storage/cloudinary-pdf";
 
 export const runtime = "nodejs";
@@ -18,6 +19,9 @@ export async function POST(req) {
   }
 
   await connectDB();
+
+  let uploadedFileUrl = null;
+  let uploadedThumbnailUrl = null;
 
   try {
     const formData = await req.formData();
@@ -49,11 +53,13 @@ export async function POST(req) {
     }
 
     const uploadRes = await uploadPdfToCloudinary(file, title);
+    uploadedFileUrl = uploadRes.fileUrl;
 
     let thumbnailUrl = null;
     if (thumbnail && thumbnail.size > 0) {
       const thumbRes = await uploadImageToCloudinary(thumbnail);
-      thumbnailUrl = thumbRes?.secure_url || null;
+      uploadedThumbnailUrl = thumbRes?.secure_url || null;
+      thumbnailUrl = uploadedThumbnailUrl;
     }
 
     const note = await Note.create({
@@ -73,6 +79,14 @@ export async function POST(req) {
 
     return NextResponse.json({ success: true, note }, { status: 201 });
   } catch (error) {
+    if (uploadedFileUrl) {
+      await deleteCloudinaryAsset(uploadedFileUrl, "raw");
+    }
+
+    if (uploadedThumbnailUrl) {
+      await deleteCloudinaryAsset(uploadedThumbnailUrl, "image");
+    }
+
     if (error instanceof PdfUploadError) {
       console.error("Note upload validation error:", error.message);
       return NextResponse.json({ error: error.message }, { status: error.status });

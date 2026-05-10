@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getNoteById } from "@/lib/getNotes";
-import { getDirectPdfUrl, getPdfDownloadUrl, getPdfPreviewImageUrl, sanitizePdfFilename } from "@/lib/pdf-url";
+import { getPdfPreviewImageUrl, sanitizePdfFilename } from "@/lib/pdf-url";
+import PurchaseNoteActions from "@/presentation/components/notes/PurchaseNoteActions";
 
 export const dynamic = "force-dynamic";
 
@@ -45,11 +46,9 @@ export default async function LibraryNotePage({ params }) {
 
   const isFree = Number(note.price) === 0;
   const tags = Array.isArray(note.tags) ? note.tags.filter(Boolean) : [];
-  const pdfUrl = getDirectPdfUrl(note.fileUrl);
   const pdfFilename = sanitizePdfFilename(note.title);
-  const downloadUrl = getPdfDownloadUrl(note.fileUrl, pdfFilename);
   const previewImageUrl = getPdfPreviewImageUrl(note.fileUrl);
-  const canUsePdf = Boolean(pdfUrl);
+  const canUsePdf = Boolean(note.fileUrl);
 
   return (
     <main className="notesPage">
@@ -151,17 +150,7 @@ export default async function LibraryNotePage({ params }) {
             )}
 
             <div className="noteActions">
-              {canUsePdf && (
-                <a
-                  href={downloadUrl || pdfUrl}
-                  download={pdfFilename}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="notesButton"
-                >
-                  Download Notes
-                </a>
-              )}
+              <PurchaseNoteActions note={note} />
               <Link href="/library" className="notesButtonSecondary">
                 Back to Library
               </Link>

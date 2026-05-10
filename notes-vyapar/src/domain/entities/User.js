@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true,
+    default: null,
   },
   createdAt: {
     type: Date,
@@ -56,13 +56,37 @@ const userSchema = new mongoose.Schema({
   passwordResetTokenExpiry: {
     type: Date,
     default: null,
-  }
+  },
+  // Google OAuth fields
+  googleId: {
+    type: String,
+    default: null,
+    index: true,
+    sparse: true,
+  },
+  accessToken: {
+    type: String,
+    default: null,
+  },
+  refreshToken: {
+    type: String,
+    default: null,
+  },
+  tokenExpiry: {
+    type: Date,
+    default: null,
+  },
 },{timestamps: true});
 
 
   //  password hash before save 
 userSchema.pre('save', async function () {
   if (!this.isModified('password')) {
+    return;
+  }
+
+  // Skip hashing if no password set (Google OAuth users)
+  if (!this.password) {
     return;
   }
 

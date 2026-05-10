@@ -11,7 +11,7 @@ export const metadata = {
 
 export default async function LibraryPage({ searchParams }) {
   const resolvedParams = await searchParams;
-  const notes = await getNotes(resolvedParams);
+  const { notes } = await getNotes(resolvedParams);
   const search = resolvedParams?.search || "";
 
   return (

@@ -39,7 +39,7 @@ export default function NotesFilter() {
 
   return (
     <div className="bg-white dark:bg-[#1a2333] p-4 rounded-xl shadow-sm mb-8 flex flex-col md:flex-row gap-4 justify-between items-center border border-gray-100 dark:border-gray-800">
-      <form onSubmit={handleSearch} className="w-full md:w-1/3 relative">
+      <form onSubmit={handleSearch} className="w-full md:w-1/3 relative flex items-center gap-2">
         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
           <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -52,6 +52,12 @@ export default function NotesFilter() {
           placeholder="Search by title or subject..."
           className="block w-full pl-10 pr-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg leading-5 bg-gray-50 dark:bg-[#0c1324] text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors"
         />
+        <button
+          type="submit"
+          className="hidden sm:inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+        >
+          Search
+        </button>
       </form>
 
       <div className="w-full md:w-auto flex flex-col sm:flex-row gap-4 items-center">

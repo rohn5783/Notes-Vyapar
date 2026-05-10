@@ -129,6 +129,32 @@ export function extractCloudinaryPublicId(url, resourceType) {
   }
 }
 
+export function getSignedCloudinaryUrl(fileUrl, fileName) {
+  if (!fileUrl) {
+    return null;
+  }
+
+  const publicId =
+    extractCloudinaryPublicId(fileUrl, "image") ||
+    extractCloudinaryPublicId(fileUrl, "raw");
+
+  if (!publicId) {
+    return fileUrl;
+  }
+
+  if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+    return fileUrl;
+  }
+
+  return cloudinary.url(publicId, {
+    resource_type: "image",
+    type: "upload",
+    sign_url: true,
+    secure: true,
+    attachment: fileName || undefined,
+  });
+}
+
 export async function deleteCloudinaryAsset(url, resourceType) {
   const publicId = extractCloudinaryPublicId(url, resourceType);
 

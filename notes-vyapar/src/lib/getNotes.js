@@ -18,42 +18,81 @@ const serializeNote = (note) => {
 export async function getNotes(searchParams) {
   try {
     await connectDB();
-    
-    const { search, type, sort } = searchParams || {};
-    
+
+    const {
+      search,
+      type,
+      sort,
+      category,
+      sellerId,
+      page = 1,
+      limit = 20,
+    } = searchParams || {};
+
+    const pageNumber = Math.max(1, Number(page) || 1);
+    const limitNumber = Math.min(50, Math.max(1, Number(limit) || 20));
+    const skip = (pageNumber - 1) * limitNumber;
+
     const query = {};
-    
+
     if (search) {
+      const regex = { $regex: search, $options: "i" };
       query.$or = [
-        { title: { $regex: search, $options: "i" } },
-        { subject: { $regex: search, $options: "i" } }
+        { title: regex },
+        { subject: regex },
+        { description: regex },
+        { category: regex },
+        { tags: regex },
       ];
     }
-    
+
     if (type === "free") {
       query.price = 0;
     } else if (type === "paid") {
       query.price = { $gt: 0 };
     }
-    
-    let sortObj = { createdAt: -1 };
-    if (sort === "oldest") {
-      sortObj = { createdAt: 1 };
-    } else if (sort === "price_low") {
-      sortObj = { price: 1, createdAt: -1 };
-    } else if (sort === "price_high") {
-      sortObj = { price: -1, createdAt: -1 };
+
+    if (category && category !== "All") {
+      query.category = category;
     }
 
-    const notes = await Note.find(query)
-      .populate("seller", "name")
-      .sort(sortObj)
-      .lean();
-      
-    return notes.map(serializeNote);
+    if (sellerId && mongoose.Types.ObjectId.isValid(sellerId)) {
+      query.seller = sellerId;
+    }
+
+    const sortMap = {
+      latest: { createdAt: -1 },
+      oldest: { createdAt: 1 },
+      price_low: { price: 1 },
+      price_high: { price: -1 },
+    };
+
+    const sortBy = sortMap[sort] || { createdAt: -1 };
+
+    const [notes, total] = await Promise.all([
+      Note.find(query)
+        .populate("seller", "name")
+        .sort(sortBy)
+        .skip(skip)
+        .limit(limitNumber)
+        .lean(),
+      Note.countDocuments(query),
+    ]);
+
+    return {
+      notes: notes.map(serializeNote),
+      total,
+      page: pageNumber,
+      limit: limitNumber,
+    };
   } catch (error) {
     console.error("Error fetching notes:", error);
-    return [];
+    return {
+      notes: [],
+      total: 0,
+      page: 1,
+      limit: 20,
+    };
   }
 }
 

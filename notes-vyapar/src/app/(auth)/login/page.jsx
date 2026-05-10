@@ -11,6 +11,7 @@ export default async function LoginPage({ searchParams }) {
       loggedOut={resolvedSearchParams?.loggedOut || ""}
       verified={resolvedSearchParams?.verified || ""}
       verifyError={resolvedSearchParams?.verifyError || ""}
+      error={resolvedSearchParams?.error || ""}
     />
   );
 }

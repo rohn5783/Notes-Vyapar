@@ -45,6 +45,20 @@ const parseResponse = async (response) => {
   return result;
 };
 
+const AUTH_INIT_COOKIE = "notes-vyapar-auth-init";
+
+const readInitCookie = () => {
+  if (!isBrowser()) return null;
+  const match = document.cookie
+    .split("; ")
+    .find((row) => row.startsWith(`${AUTH_INIT_COOKIE}=`));
+  if (!match) return null;
+  const value = match.split("=")[1];
+  // Clear the short-lived init cookie immediately after reading
+  document.cookie = `${AUTH_INIT_COOKIE}=; Max-Age=0; path=/`;
+  return value || null;
+};
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
@@ -68,7 +82,14 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const initializeAuth = async () => {
-      const storedToken = readStoredToken();
+      // Check for token from Google OAuth redirect first
+      const oauthToken = readInitCookie();
+      const storedToken = oauthToken || readStoredToken();
+
+      // If we got a token from Google OAuth callback, persist it
+      if (oauthToken) {
+        storeToken(oauthToken);
+      }
 
       try {
         const currentUser = await fetchProfile(storedToken);
