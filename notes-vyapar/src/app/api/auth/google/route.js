@@ -10,10 +10,14 @@ import { generateAuthUrl } from "@/infrastructure/services/googleTokenService";
  */
 export async function GET(req) {
   try {
-    const { searchParams } = new URL(req.url);
+    const { searchParams, origin } = new URL(req.url);
     const forceConsent = searchParams.get("force") === "true";
 
-    const authUrl = generateAuthUrl(forceConsent);
+    // Dynamically derive the redirect URI from the request origin
+    // so it works on both localhost and production (Vercel)
+    const redirectUri = `${origin}/api/auth/google/callback`;
+
+    const authUrl = generateAuthUrl(forceConsent, redirectUri);
     return NextResponse.redirect(authUrl);
   } catch (error) {
     console.error("[Google OAuth] Failed to generate auth URL:", error);

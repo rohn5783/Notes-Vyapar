@@ -3,10 +3,10 @@ import { google } from "googleapis";
 /**
  * Creates a configured Google OAuth2 client using env variables.
  */
-export function createOAuthClient() {
+export function createOAuthClient(redirectUriOverride) {
   const clientId = process.env.GOOGLE_CLIENT_ID;
   const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
-  const redirectUri = process.env.GOOGLE_OAUTH_REDIRECT_URI;
+  const redirectUri = redirectUriOverride || process.env.GOOGLE_OAUTH_REDIRECT_URI;
 
   if (!clientId || !clientSecret || !redirectUri) {
     throw new Error(
@@ -23,8 +23,8 @@ export function createOAuthClient() {
  * prompt: "consent" is ONLY sent if we don't have a refresh token yet for this user,
  * passed in via the `forceConsent` flag.
  */
-export function generateAuthUrl(forceConsent = false) {
-  const client = createOAuthClient();
+export function generateAuthUrl(forceConsent = false, redirectUri) {
+  const client = createOAuthClient(redirectUri);
 
   return client.generateAuthUrl({
     access_type: "offline",
@@ -40,8 +40,8 @@ export function generateAuthUrl(forceConsent = false) {
 /**
  * Exchanges an authorization code for access + refresh tokens.
  */
-export async function exchangeCodeForTokens(code) {
-  const client = createOAuthClient();
+export async function exchangeCodeForTokens(code, redirectUri) {
+  const client = createOAuthClient(redirectUri);
   const { tokens } = await client.getToken(code);
   return tokens;
 }

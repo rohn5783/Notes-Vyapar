@@ -38,8 +38,12 @@ export async function GET(req) {
   try {
     await connectDB();
 
+    // Derive the same redirect URI used during the auth URL generation
+    const { origin } = new URL(req.url);
+    const redirectUri = `${origin}/api/auth/google/callback`;
+
     // Step 1: Exchange auth code for tokens
-    const tokens = await exchangeCodeForTokens(code);
+    const tokens = await exchangeCodeForTokens(code, redirectUri);
 
     const {
       access_token: accessToken,
