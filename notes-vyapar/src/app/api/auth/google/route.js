@@ -10,12 +10,17 @@ import { generateAuthUrl } from "@/infrastructure/services/googleTokenService";
  */
 export async function GET(req) {
   try {
-    const { searchParams, origin } = new URL(req.url);
+    const { searchParams } = new URL(req.url);
     const forceConsent = searchParams.get("force") === "true";
 
-    // Dynamically derive the redirect URI from the request origin
-    // so it works on both localhost and production (Vercel)
-    const redirectUri = `${origin}/api/auth/google/callback`;
+    // Build a stable redirect URI that doesn't change per Vercel preview deploy.
+    // Priority: APP_URL (manual) > VERCEL_PROJECT_PRODUCTION_URL (auto) > request origin (local)
+    const baseUrl =
+      process.env.APP_URL ||
+      (process.env.VERCEL_PROJECT_PRODUCTION_URL
+        ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+        : new URL(req.url).origin);
+    const redirectUri = `${baseUrl}/api/auth/google/callback`;
 
     const authUrl = generateAuthUrl(forceConsent, redirectUri);
     return NextResponse.redirect(authUrl);

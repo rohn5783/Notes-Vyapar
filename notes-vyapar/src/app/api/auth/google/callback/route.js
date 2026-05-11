@@ -38,9 +38,13 @@ export async function GET(req) {
   try {
     await connectDB();
 
-    // Derive the same redirect URI used during the auth URL generation
-    const { origin } = new URL(req.url);
-    const redirectUri = `${origin}/api/auth/google/callback`;
+    // Must use the same stable redirect URI as the initial auth request
+    const baseUrl =
+      process.env.APP_URL ||
+      (process.env.VERCEL_PROJECT_PRODUCTION_URL
+        ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+        : new URL(req.url).origin);
+    const redirectUri = `${baseUrl}/api/auth/google/callback`;
 
     // Step 1: Exchange auth code for tokens
     const tokens = await exchangeCodeForTokens(code, redirectUri);
