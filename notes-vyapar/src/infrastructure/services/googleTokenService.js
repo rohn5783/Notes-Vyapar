@@ -6,11 +6,14 @@ import { google } from "googleapis";
 export function createOAuthClient(redirectUriOverride) {
   const clientId = process.env.GOOGLE_CLIENT_ID;
   const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
-  const redirectUri = redirectUriOverride || process.env.GOOGLE_OAUTH_REDIRECT_URI;
+  const redirectUri =
+    redirectUriOverride ||
+    process.env.GOOGLE_REDIRECT_URI ||
+    process.env.GOOGLE_OAUTH_REDIRECT_URI;
 
   if (!clientId || !clientSecret || !redirectUri) {
     throw new Error(
-      "Missing Google OAuth credentials: GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_OAUTH_REDIRECT_URI must all be set."
+      "Missing Google OAuth credentials: GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, and GOOGLE_REDIRECT_URI (or GOOGLE_OAUTH_REDIRECT_URI) must all be set."
     );
   }
 

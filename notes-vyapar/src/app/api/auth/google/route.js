@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { generateAuthUrl } from "@/infrastructure/services/googleTokenService";
-import { getBaseUrl, getOAuthRedirectUri } from "@/lib/get-base-url";
+import { getOAuthRedirectUri } from "@/lib/get-base-url";
 
 /**
  * GET /api/auth/google

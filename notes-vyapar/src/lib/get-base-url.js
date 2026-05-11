@@ -46,23 +46,23 @@ export function getBaseUrl(req) {
  * For local development, use localhost.
  */
 export function getOAuthRedirectUri() {
-  // Explicit override via APP_URL is safest for production deploys.
+  // Use explicit Google OAuth callback URI if configured
+  const configuredRedirectUri = process.env.GOOGLE_REDIRECT_URI || process.env.GOOGLE_OAUTH_REDIRECT_URI;
+  if (configuredRedirectUri) {
+    return configuredRedirectUri.replace(/\/+$/, "");
+  }
+
+  // If APP_URL is explicitly configured in Vercel, build the callback from that
   if (process.env.APP_URL && process.env.APP_URL !== "http://localhost:3000") {
     const base = process.env.APP_URL.replace(/\/+$/, "");
-    const uri = `${base}/api/auth/google/callback`;
-    console.log("[OAuth] Using APP_URL redirect URI:", uri);
-    return uri;
+    return `${base}/api/auth/google/callback`;
   }
 
-  // In any Vercel deployment (production, preview, etc.), always use the production domain for OAuth
+  // In Vercel deployments without APP_URL, use the hardcoded production domain
   if (process.env.VERCEL || process.env.VERCEL_ENV) {
-    const uri = "https://notes-vyapar.vercel.app/api/auth/google/callback";
-    console.log("[OAuth] Using Vercel production redirect URI:", uri, "(VERCEL=", process.env.VERCEL, ", VERCEL_ENV=", process.env.VERCEL_ENV, ")");
-    return uri;
+    return "https://notes-vyapar.vercel.app/api/auth/google/callback";
   }
 
-  // Local development
-  const uri = "http://localhost:3000/api/auth/google/callback";
-  console.log("[OAuth] Using localhost redirect URI:", uri);
-  return uri;
+  // Local development fallback
+  return "http://localhost:3000/api/auth/google/callback";
 }

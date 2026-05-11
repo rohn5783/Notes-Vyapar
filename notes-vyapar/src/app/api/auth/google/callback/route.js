@@ -7,7 +7,7 @@ import {
   fetchGoogleProfile,
 } from "@/infrastructure/services/googleTokenService";
 import { AUTH_COOKIE_NAME } from "@/middleware/auth.middleware";
-import { getBaseUrl, getOAuthRedirectUri } from "@/lib/get-base-url";
+import { getOAuthRedirectUri } from "@/lib/get-base-url";
 
 /**
  * GET /api/auth/google/callback
