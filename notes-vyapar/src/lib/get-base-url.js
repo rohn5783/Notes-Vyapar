@@ -45,7 +45,7 @@ export function getBaseUrl(req) {
  * For production deployments, use the production domain.
  * For local development, use localhost.
  */
-export function getOAuthRedirectUri() {
+export function getOAuthRedirectUri(req) {
   // Use explicit Google OAuth callback URI if configured
   const configuredRedirectUri = process.env.GOOGLE_REDIRECT_URI || process.env.GOOGLE_OAUTH_REDIRECT_URI;
   if (configuredRedirectUri) {
@@ -58,8 +58,17 @@ export function getOAuthRedirectUri() {
     return `${base}/api/auth/google/callback`;
   }
 
-  // In Vercel deployments without APP_URL, use the hardcoded production domain
-  if (process.env.VERCEL || process.env.VERCEL_ENV) {
+  // If running in a Vercel preview deployment, derive the callback from the current request host
+  if (req && process.env.VERCEL && process.env.VERCEL_ENV !== "production") {
+    const protocol = req.headers.get("x-forwarded-proto") || "https";
+    const host = req.headers.get("x-forwarded-host") || req.headers.get("host");
+    if (host) {
+      return `${protocol}://${host}/api/auth/google/callback`;
+    }
+  }
+
+  // In any Vercel production deployment or fallback, use the production callback
+  if (process.env.VERCEL || process.env.VERCEL_ENV === "production") {
     return "https://notes-vyapar.vercel.app/api/auth/google/callback";
   }
 

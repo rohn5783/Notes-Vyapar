@@ -40,7 +40,7 @@ export async function GET(req) {
     await connectDB();
 
     // Use the same stable redirect URI as the initial auth request
-    const redirectUri = getOAuthRedirectUri();
+    const redirectUri = getOAuthRedirectUri(req);
     console.log("[Google Callback] Using redirect URI for token exchange:", redirectUri);
 
     // Step 1: Exchange auth code for tokens

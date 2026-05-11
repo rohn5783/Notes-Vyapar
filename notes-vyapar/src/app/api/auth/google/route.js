@@ -15,7 +15,7 @@ export async function GET(req) {
     const forceConsent = searchParams.get("force") === "true";
 
     // Use stable OAuth redirect URI registered in Google Cloud Console
-    const redirectUri = getOAuthRedirectUri();
+    const redirectUri = getOAuthRedirectUri(req);
     console.log("[Google Auth Route] Generated redirect URI:", redirectUri);
 
     const authUrl = generateAuthUrl(forceConsent, redirectUri);
