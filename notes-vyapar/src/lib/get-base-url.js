@@ -52,23 +52,15 @@ export function getOAuthRedirectUri(req) {
     return configuredRedirectUri.replace(/\/+$/, "");
   }
 
-  // If APP_URL is explicitly configured in Vercel, build the callback from that
+  // If APP_URL is explicitly configured, build the callback from that
   if (process.env.APP_URL && process.env.APP_URL !== "http://localhost:3000") {
     const base = process.env.APP_URL.replace(/\/+$/, "");
     return `${base}/api/auth/google/callback`;
   }
 
-  // If running in a Vercel preview deployment, derive the callback from the current request host
-  if (req && process.env.VERCEL && process.env.VERCEL_ENV !== "production") {
-    const protocol = req.headers.get("x-forwarded-proto") || "https";
-    const host = req.headers.get("x-forwarded-host") || req.headers.get("host");
-    if (host) {
-      return `${protocol}://${host}/api/auth/google/callback`;
-    }
-  }
-
-  // In any Vercel production deployment or fallback, use the production callback
-  if (process.env.VERCEL || process.env.VERCEL_ENV === "production") {
+  // On any Vercel deployment (preview, production, etc.), always use the production callback
+  // This prevents redirect_uri_mismatch errors on preview deployments
+  if (process.env.VERCEL || process.env.NODE_ENV === "production") {
     return "https://notes-vyapar.vercel.app/api/auth/google/callback";
   }
 
