@@ -7,7 +7,7 @@ import {
   fetchGoogleProfile,
 } from "@/infrastructure/services/googleTokenService";
 import { AUTH_COOKIE_NAME } from "@/middleware/auth.middleware";
-import { getBaseUrl } from "@/lib/get-base-url";
+import { getBaseUrl, getOAuthRedirectUri } from "@/lib/get-base-url";
 
 /**
  * GET /api/auth/google/callback
@@ -39,9 +39,8 @@ export async function GET(req) {
   try {
     await connectDB();
 
-    // Must use the same stable redirect URI as the initial auth request
-    const baseUrl = getBaseUrl(req);
-    const redirectUri = `${baseUrl}/api/auth/google/callback`;
+    // Use the same stable redirect URI as the initial auth request
+    const redirectUri = getOAuthRedirectUri();
 
     // Step 1: Exchange auth code for tokens
     const tokens = await exchangeCodeForTokens(code, redirectUri);

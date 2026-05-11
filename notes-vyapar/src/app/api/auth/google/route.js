@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { generateAuthUrl } from "@/infrastructure/services/googleTokenService";
-import { getBaseUrl } from "@/lib/get-base-url";
+import { getBaseUrl, getOAuthRedirectUri } from "@/lib/get-base-url";
 
 /**
  * GET /api/auth/google
@@ -14,8 +14,8 @@ export async function GET(req) {
     const { searchParams } = new URL(req.url);
     const forceConsent = searchParams.get("force") === "true";
 
-    const baseUrl = getBaseUrl(req);
-    const redirectUri = `${baseUrl}/api/auth/google/callback`;
+    // Use stable OAuth redirect URI registered in Google Cloud Console
+    const redirectUri = getOAuthRedirectUri();
 
     const authUrl = generateAuthUrl(forceConsent, redirectUri);
     return NextResponse.redirect(authUrl);

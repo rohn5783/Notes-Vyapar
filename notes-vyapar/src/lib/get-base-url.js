@@ -28,6 +28,29 @@ export function getBaseUrl(req) {
     return "https://notes-vyapar.vercel.app";
   }
 
-  // 4. Local development — derive from request
-  return new URL(req.url).origin;
+  // 4. Local development — use request origin
+  if (req) {
+    const protocol = req.headers.get("x-forwarded-proto") || "http";
+    const host = req.headers.get("host") || "localhost:3000";
+    return `${protocol}://${host}`;
+  }
+
+  // Fallback for environments without request object
+  return process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+}
+
+/**
+ * Returns the OAuth redirect URI for Google OAuth.
+ * This should always be a stable, pre-registered URI in Google Cloud Console.
+ * For production deployments, use the production domain.
+ * For local development, use localhost.
+ */
+export function getOAuthRedirectUri() {
+  // In production (Vercel), always use the production domain for OAuth
+  if (process.env.VERCEL || process.env.NODE_ENV === "production") {
+    return "https://notes-vyapar.vercel.app/api/auth/google/callback";
+  }
+
+  // Local development
+  return "http://localhost:3000/api/auth/google/callback";
 }
