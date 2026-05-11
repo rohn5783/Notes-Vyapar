@@ -46,11 +46,23 @@ export function getBaseUrl(req) {
  * For local development, use localhost.
  */
 export function getOAuthRedirectUri() {
-  // In production (Vercel), always use the production domain for OAuth
-  if (process.env.VERCEL || process.env.NODE_ENV === "production") {
-    return "https://notes-vyapar.vercel.app/api/auth/google/callback";
+  // Explicit override via APP_URL is safest for production deploys.
+  if (process.env.APP_URL && process.env.APP_URL !== "http://localhost:3000") {
+    const base = process.env.APP_URL.replace(/\/+$/, "");
+    const uri = `${base}/api/auth/google/callback`;
+    console.log("[OAuth] Using APP_URL redirect URI:", uri);
+    return uri;
+  }
+
+  // In any Vercel deployment (production, preview, etc.), always use the production domain for OAuth
+  if (process.env.VERCEL || process.env.VERCEL_ENV) {
+    const uri = "https://notes-vyapar.vercel.app/api/auth/google/callback";
+    console.log("[OAuth] Using Vercel production redirect URI:", uri, "(VERCEL=", process.env.VERCEL, ", VERCEL_ENV=", process.env.VERCEL_ENV, ")");
+    return uri;
   }
 
   // Local development
-  return "http://localhost:3000/api/auth/google/callback";
+  const uri = "http://localhost:3000/api/auth/google/callback";
+  console.log("[OAuth] Using localhost redirect URI:", uri);
+  return uri;
 }

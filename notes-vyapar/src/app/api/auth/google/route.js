@@ -16,8 +16,10 @@ export async function GET(req) {
 
     // Use stable OAuth redirect URI registered in Google Cloud Console
     const redirectUri = getOAuthRedirectUri();
+    console.log("[Google Auth Route] Generated redirect URI:", redirectUri);
 
     const authUrl = generateAuthUrl(forceConsent, redirectUri);
+    console.log("[Google Auth Route] Redirecting to Google consent screen");
     return NextResponse.redirect(authUrl);
   } catch (error) {
     console.error("[Google OAuth] Failed to generate auth URL:", error);
