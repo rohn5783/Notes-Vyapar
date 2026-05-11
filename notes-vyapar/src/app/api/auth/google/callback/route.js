@@ -7,6 +7,7 @@ import {
   fetchGoogleProfile,
 } from "@/infrastructure/services/googleTokenService";
 import { AUTH_COOKIE_NAME } from "@/middleware/auth.middleware";
+import { getBaseUrl } from "@/lib/get-base-url";
 
 /**
  * GET /api/auth/google/callback
@@ -39,11 +40,7 @@ export async function GET(req) {
     await connectDB();
 
     // Must use the same stable redirect URI as the initial auth request
-    const baseUrl =
-      process.env.APP_URL ||
-      (process.env.VERCEL_PROJECT_PRODUCTION_URL
-        ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-        : new URL(req.url).origin);
+    const baseUrl = getBaseUrl(req);
     const redirectUri = `${baseUrl}/api/auth/google/callback`;
 
     // Step 1: Exchange auth code for tokens
